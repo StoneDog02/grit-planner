@@ -131,7 +131,7 @@ import {
 } from "@remix-run/react";
 
 // app/styles.css
-var styles_default = "/build/_assets/styles-JTYIOFK3.css";
+var styles_default = "/build/_assets/styles-MFAFJEJD.css";
 
 // app/root.tsx
 import { jsxDEV as jsxDEV2 } from "react/jsx-dev-runtime";
@@ -318,21 +318,105 @@ function App() {
 // app/routes/request-bid.tsx
 var request_bid_exports = {};
 __export(request_bid_exports, {
+  action: () => action,
   default: () => RequestBid
 });
-import { Form } from "@remix-run/react";
-import { useState } from "react";
+import { json } from "@remix-run/node";
+import { useFetcher } from "@remix-run/react";
+import { useState, useEffect } from "react";
+import { Resend } from "resend";
 import { jsxDEV as jsxDEV3 } from "react/jsx-dev-runtime";
+var action = async ({ request }) => {
+  let resend = new Resend(process.env.RESEND_API_KEY), formData = await request.formData(), name = formData.get("name"), email = formData.get("email"), phone = formData.get("phone"), contactPreference = formData.get("contactPreference"), projectType = formData.get("projectType"), projectDescription = formData.get("projectDescription"), timeline = formData.get("timeline");
+  if (!name || !email || !phone || !contactPreference || !projectType || !projectDescription || !timeline || typeof name != "string" || typeof email != "string" || typeof phone != "string" || typeof contactPreference != "string" || typeof projectType != "string" || typeof projectDescription != "string" || typeof timeline != "string")
+    return json(
+      { success: !1, error: "All fields are required and must be valid." },
+      { status: 400 }
+    );
+  let data = {
+    name,
+    email,
+    phone,
+    contactPreference,
+    projectType,
+    projectDescription,
+    timeline
+  };
+  try {
+    let { data: resendData, error } = await resend.emails.send({
+      from: "Grit Construction <onboarding@resend.dev>",
+      to: ["gritconstruction2023@gmail.com", "stoney.harward@gmail.com"],
+      subject: `New Bid Request from ${data.name.charAt(0).toUpperCase() + data.name.slice(1)}`,
+      html: `
+        <h2>New Bid Request</h2>
+        <p><strong>Name:</strong> ${data.name.charAt(0).toUpperCase() + data.name.slice(1)}</p>
+        <p><strong>Email:</strong> ${data.email.toLowerCase()}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Preferred Contact Method:</strong> ${data.contactPreference.charAt(0).toUpperCase() + data.contactPreference.slice(1)}</p>
+        <p><strong>Project Type:</strong> ${data.projectType.charAt(0).toUpperCase() + data.projectType.slice(1)}</p>
+        <p><strong>Project Description:</strong> ${data.projectDescription.charAt(0).toUpperCase() + data.projectDescription.slice(1)}</p>
+        <p><strong>Desired Timeline:</strong> ${data.timeline.charAt(0).toUpperCase() + data.timeline.slice(1)}</p>
+      `
+    });
+    return error ? json(
+      {
+        success: !1,
+        error: `Failed to send email: ${error.message}`
+      },
+      { status: 500 }
+    ) : json(
+      {
+        success: !0,
+        message: "Request sent successfully!"
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return json(
+      {
+        success: !1,
+        error: error instanceof Error ? error.message : "Failed to submit bid request. Please try again."
+      },
+      { status: 500 }
+    );
+  }
+};
 function RequestBid() {
-  let [formData, setFormData] = useState({
+  let fetcher = useFetcher(), [showSuccess, setShowSuccess] = useState(!1), [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    contactPreference: "email",
     projectType: "",
     projectDescription: "",
     timeline: ""
-  }), handleSubmit = async (event) => {
-    event.preventDefault(), console.log("Form submitted:", formData);
+  });
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      setShowSuccess(!0), setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        contactPreference: "email",
+        projectType: "",
+        projectDescription: "",
+        timeline: ""
+      }), window.scrollTo({ top: 0, behavior: "smooth" });
+      let timer = setTimeout(() => {
+        setShowSuccess(!1);
+      }, 3e3);
+      return () => clearTimeout(timer);
+    }
+  }, [fetcher.data]);
+  let handleSubmit = (e) => {
+    e.preventDefault();
+    let formDataToSubmit = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSubmit.append(key, value);
+    }), fetcher.submit(formDataToSubmit, {
+      method: "post",
+      action: "/request-bid"
+    });
   }, handleChange = (e) => {
     let { name, value } = e.target;
     setFormData((prev) => ({
@@ -340,343 +424,579 @@ function RequestBid() {
       [name]: value
     }));
   };
-  return /* @__PURE__ */ jsxDEV3("div", { className: "min-h-screen bg-black py-12", children: /* @__PURE__ */ jsxDEV3("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV3("div", { className: "max-w-3xl mx-auto", children: [
-    /* @__PURE__ */ jsxDEV3("div", { className: "text-center", children: [
-      /* @__PURE__ */ jsxDEV3("h2", { className: "text-3xl font-extrabold text-white sm:text-4xl", children: "Request a Bid" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV3("div", { className: "min-h-screen bg-black py-12 relative", children: [
+    /* @__PURE__ */ jsxDEV3(
+      "div",
+      {
+        className: `fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999] transition-all duration-500 ${showSuccess ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"}`,
+        children: /* @__PURE__ */ jsxDEV3("div", { className: "bg-green-500 text-white px-4 py-2 rounded-full shadow-2xl flex items-center text-sm font-medium", children: [
+          /* @__PURE__ */ jsxDEV3(
+            "svg",
+            {
+              className: "w-4 h-4 mr-1.5",
+              fill: "none",
+              stroke: "currentColor",
+              viewBox: "0 0 24 24",
+              children: /* @__PURE__ */ jsxDEV3(
+                "path",
+                {
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: 2,
+                  d: "M5 13l4 4L19 7"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 221,
+                  columnNumber: 13
+                },
+                this
+              )
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 215,
+              columnNumber: 11
+            },
+            this
+          ),
+          fetcher.data?.message || "Request Sent Successfully!"
+        ] }, void 0, !0, {
+          fileName: "app/routes/request-bid.tsx",
+          lineNumber: 214,
+          columnNumber: 9
+        }, this)
+      },
+      void 0,
+      !1,
+      {
         fileName: "app/routes/request-bid.tsx",
-        lineNumber: 38,
+        lineNumber: 207,
+        columnNumber: 7
+      },
+      this
+    ),
+    /* @__PURE__ */ jsxDEV3("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV3("div", { className: "max-w-3xl mx-auto", children: [
+      /* @__PURE__ */ jsxDEV3("div", { className: "text-center", children: [
+        /* @__PURE__ */ jsxDEV3("h2", { className: "text-3xl font-extrabold text-white sm:text-4xl", children: "Request a Bid" }, void 0, !1, {
+          fileName: "app/routes/request-bid.tsx",
+          lineNumber: 235,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV3("p", { className: "mt-4 text-lg text-white", children: "Fill out the form below and we'll get back to you with a detailed quote for your project." }, void 0, !1, {
+          fileName: "app/routes/request-bid.tsx",
+          lineNumber: 238,
+          columnNumber: 13
+        }, this)
+      ] }, void 0, !0, {
+        fileName: "app/routes/request-bid.tsx",
+        lineNumber: 234,
+        columnNumber: 11
+      }, this),
+      fetcher.data?.error && /* @__PURE__ */ jsxDEV3("div", { className: "mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
+        fileName: "app/routes/request-bid.tsx",
+        lineNumber: 245,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV3("p", { className: "mt-4 text-lg text-white", children: "Fill out the form below and we'll get back to you with a detailed quote for your project." }, void 0, !1, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 41,
-        columnNumber: 13
-      }, this)
-    ] }, void 0, !0, {
-      fileName: "app/routes/request-bid.tsx",
-      lineNumber: 37,
-      columnNumber: 11
-    }, this),
-    /* @__PURE__ */ jsxDEV3("div", { className: "mt-12", children: /* @__PURE__ */ jsxDEV3(Form, { method: "post", onSubmit: handleSubmit, className: "space-y-8", children: [
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "name",
-            className: "block text-sm font-medium text-white",
-            children: "Name"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 50,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "input",
-          {
-            type: "text",
-            name: "name",
-            id: "name",
-            required: !0,
-            value: formData.name,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 56,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 49,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "email",
-            className: "block text-sm font-medium text-white",
-            children: "Email"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 68,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "input",
-          {
-            type: "email",
-            name: "email",
-            id: "email",
-            required: !0,
-            value: formData.email,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 74,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 67,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "phone",
-            className: "block text-sm font-medium text-white",
-            children: "Phone"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 86,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "input",
-          {
-            type: "tel",
-            name: "phone",
-            id: "phone",
-            required: !0,
-            value: formData.phone,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 92,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 85,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "projectType",
-            className: "block text-sm font-medium text-white",
-            children: "Project Type"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 104,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "select",
-          {
-            name: "projectType",
-            id: "projectType",
-            required: !0,
-            value: formData.projectType,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
-            children: [
-              /* @__PURE__ */ jsxDEV3("option", { value: "", children: "Select a project type" }, void 0, !1, {
-                fileName: "app/routes/request-bid.tsx",
-                lineNumber: 118,
-                columnNumber: 19
-              }, this),
-              /* @__PURE__ */ jsxDEV3("option", { value: "residential", children: "Residential" }, void 0, !1, {
-                fileName: "app/routes/request-bid.tsx",
-                lineNumber: 119,
-                columnNumber: 19
-              }, this),
-              /* @__PURE__ */ jsxDEV3("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
-                fileName: "app/routes/request-bid.tsx",
-                lineNumber: 120,
-                columnNumber: 19
-              }, this),
-              /* @__PURE__ */ jsxDEV3("option", { value: "renovation", children: "Renovation" }, void 0, !1, {
-                fileName: "app/routes/request-bid.tsx",
-                lineNumber: 121,
-                columnNumber: 19
-              }, this),
-              /* @__PURE__ */ jsxDEV3("option", { value: "new-construction", children: "New Construction" }, void 0, !1, {
-                fileName: "app/routes/request-bid.tsx",
-                lineNumber: 122,
-                columnNumber: 19
-              }, this)
-            ]
-          },
-          void 0,
-          !0,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 110,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 103,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "projectDescription",
-            className: "block text-sm font-medium text-white",
-            children: "Project Description"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 127,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "textarea",
-          {
-            name: "projectDescription",
-            id: "projectDescription",
-            rows: 4,
-            required: !0,
-            value: formData.projectDescription,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 133,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 126,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: [
-        /* @__PURE__ */ jsxDEV3(
-          "label",
-          {
-            htmlFor: "timeline",
-            className: "block text-sm font-medium text-white",
-            children: "Desired Timeline"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 145,
-            columnNumber: 17
-          },
-          this
-        ),
-        /* @__PURE__ */ jsxDEV3(
-          "input",
-          {
-            type: "text",
-            name: "timeline",
-            id: "timeline",
-            placeholder: "e.g., ASAP, 3 months, etc.",
-            required: !0,
-            value: formData.timeline,
-            onChange: handleChange,
-            className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-          },
-          void 0,
-          !1,
-          {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 151,
-            columnNumber: 17
-          },
-          this
-        )
-      ] }, void 0, !0, {
-        fileName: "app/routes/request-bid.tsx",
-        lineNumber: 144,
-        columnNumber: 15
-      }, this),
-      /* @__PURE__ */ jsxDEV3("div", { children: /* @__PURE__ */ jsxDEV3(
-        "button",
+      /* @__PURE__ */ jsxDEV3("div", { className: "mt-12", children: /* @__PURE__ */ jsxDEV3(
+        fetcher.Form,
         {
-          type: "submit",
-          className: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
-          children: "Submit Request"
+          method: "post",
+          onSubmit: handleSubmit,
+          className: "space-y-8",
+          children: [
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "name",
+                  className: "block text-sm font-medium text-white",
+                  children: "Name"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 257,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "input",
+                {
+                  type: "text",
+                  name: "name",
+                  id: "name",
+                  required: !0,
+                  value: formData.name,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 263,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 256,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "email",
+                  className: "block text-sm font-medium text-white",
+                  children: "Email"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 275,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "input",
+                {
+                  type: "email",
+                  name: "email",
+                  id: "email",
+                  required: !0,
+                  value: formData.email,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 281,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 274,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "phone",
+                  className: "block text-sm font-medium text-white",
+                  children: "Phone"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 293,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "input",
+                {
+                  type: "tel",
+                  name: "phone",
+                  id: "phone",
+                  required: !0,
+                  value: formData.phone,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 299,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 292,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3("label", { className: "block text-sm font-medium text-white mb-2", children: "Preferred Contact Method" }, void 0, !1, {
+                fileName: "app/routes/request-bid.tsx",
+                lineNumber: 311,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV3("div", { className: "flex space-x-6", children: [
+                /* @__PURE__ */ jsxDEV3("div", { className: "flex items-center", children: [
+                  /* @__PURE__ */ jsxDEV3(
+                    "input",
+                    {
+                      type: "radio",
+                      id: "email-preference",
+                      name: "contactPreference",
+                      value: "email",
+                      checked: formData.contactPreference === "email",
+                      onChange: handleChange,
+                      className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 316,
+                      columnNumber: 21
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV3(
+                    "label",
+                    {
+                      htmlFor: "email-preference",
+                      className: "ml-2 text-sm text-white",
+                      children: "Email"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 325,
+                      columnNumber: 21
+                    },
+                    this
+                  )
+                ] }, void 0, !0, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 315,
+                  columnNumber: 19
+                }, this),
+                /* @__PURE__ */ jsxDEV3("div", { className: "flex items-center", children: [
+                  /* @__PURE__ */ jsxDEV3(
+                    "input",
+                    {
+                      type: "radio",
+                      id: "phone-preference",
+                      name: "contactPreference",
+                      value: "phone",
+                      checked: formData.contactPreference === "phone",
+                      onChange: handleChange,
+                      className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 333,
+                      columnNumber: 21
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV3(
+                    "label",
+                    {
+                      htmlFor: "phone-preference",
+                      className: "ml-2 text-sm text-white",
+                      children: "Phone"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 342,
+                      columnNumber: 21
+                    },
+                    this
+                  )
+                ] }, void 0, !0, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 332,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, !0, {
+                fileName: "app/routes/request-bid.tsx",
+                lineNumber: 314,
+                columnNumber: 17
+              }, this)
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 310,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "projectType",
+                  className: "block text-sm font-medium text-white",
+                  children: "Project Type"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 353,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "select",
+                {
+                  name: "projectType",
+                  id: "projectType",
+                  required: !0,
+                  value: formData.projectType,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
+                  children: [
+                    /* @__PURE__ */ jsxDEV3("option", { value: "", children: "Select a project type" }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 367,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV3("option", { value: "residential", children: "Residential" }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 368,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV3("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 369,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV3("option", { value: "renovation", children: "Renovation" }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 370,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV3("option", { value: "new-construction", children: "New Construction" }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 371,
+                      columnNumber: 19
+                    }, this)
+                  ]
+                },
+                void 0,
+                !0,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 359,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 352,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "projectDescription",
+                  className: "block text-sm font-medium text-white",
+                  children: "Project Description"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 376,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "textarea",
+                {
+                  name: "projectDescription",
+                  id: "projectDescription",
+                  rows: 4,
+                  required: !0,
+                  value: formData.projectDescription,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 382,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 375,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: [
+              /* @__PURE__ */ jsxDEV3(
+                "label",
+                {
+                  htmlFor: "timeline",
+                  className: "block text-sm font-medium text-white",
+                  children: "Desired Timeline"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 394,
+                  columnNumber: 17
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV3(
+                "input",
+                {
+                  type: "text",
+                  name: "timeline",
+                  id: "timeline",
+                  placeholder: "e.g., ASAP, 3 months, etc.",
+                  required: !0,
+                  value: formData.timeline,
+                  onChange: handleChange,
+                  className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 400,
+                  columnNumber: 17
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 393,
+              columnNumber: 15
+            }, this),
+            /* @__PURE__ */ jsxDEV3("div", { children: /* @__PURE__ */ jsxDEV3(
+              "button",
+              {
+                type: "submit",
+                disabled: fetcher.state !== "idle",
+                className: `w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${fetcher.state !== "idle" ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"}`,
+                children: fetcher.state !== "idle" ? /* @__PURE__ */ jsxDEV3("div", { className: "flex items-center", children: [
+                  /* @__PURE__ */ jsxDEV3(
+                    "svg",
+                    {
+                      className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white",
+                      xmlns: "http://www.w3.org/2000/svg",
+                      fill: "none",
+                      viewBox: "0 0 24 24",
+                      children: [
+                        /* @__PURE__ */ jsxDEV3(
+                          "circle",
+                          {
+                            className: "opacity-25",
+                            cx: "12",
+                            cy: "12",
+                            r: "10",
+                            stroke: "currentColor",
+                            strokeWidth: "4"
+                          },
+                          void 0,
+                          !1,
+                          {
+                            fileName: "app/routes/request-bid.tsx",
+                            lineNumber: 430,
+                            columnNumber: 25
+                          },
+                          this
+                        ),
+                        /* @__PURE__ */ jsxDEV3(
+                          "path",
+                          {
+                            className: "opacity-75",
+                            fill: "currentColor",
+                            d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          },
+                          void 0,
+                          !1,
+                          {
+                            fileName: "app/routes/request-bid.tsx",
+                            lineNumber: 438,
+                            columnNumber: 25
+                          },
+                          this
+                        )
+                      ]
+                    },
+                    void 0,
+                    !0,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 424,
+                      columnNumber: 23
+                    },
+                    this
+                  ),
+                  "Submitting..."
+                ] }, void 0, !0, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 423,
+                  columnNumber: 21
+                }, this) : "Submit Request"
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/routes/request-bid.tsx",
+                lineNumber: 413,
+                columnNumber: 17
+              },
+              this
+            ) }, void 0, !1, {
+              fileName: "app/routes/request-bid.tsx",
+              lineNumber: 412,
+              columnNumber: 15
+            }, this)
+          ]
         },
         void 0,
-        !1,
+        !0,
         {
           fileName: "app/routes/request-bid.tsx",
-          lineNumber: 164,
-          columnNumber: 17
+          lineNumber: 251,
+          columnNumber: 13
         },
         this
       ) }, void 0, !1, {
         fileName: "app/routes/request-bid.tsx",
-        lineNumber: 163,
-        columnNumber: 15
+        lineNumber: 250,
+        columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/request-bid.tsx",
-      lineNumber: 48,
-      columnNumber: 13
+      lineNumber: 233,
+      columnNumber: 9
     }, this) }, void 0, !1, {
       fileName: "app/routes/request-bid.tsx",
-      lineNumber: 47,
-      columnNumber: 11
+      lineNumber: 232,
+      columnNumber: 7
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/request-bid.tsx",
-    lineNumber: 36,
-    columnNumber: 9
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/request-bid.tsx",
-    lineNumber: 35,
-    columnNumber: 7
-  }, this) }, void 0, !1, {
-    fileName: "app/routes/request-bid.tsx",
-    lineNumber: 34,
+    lineNumber: 205,
     columnNumber: 5
   }, this);
 }
@@ -946,7 +1266,7 @@ __export(contact_exports, {
   default: () => Contact,
   meta: () => meta2
 });
-import { Form as Form2 } from "@remix-run/react";
+import { Form } from "@remix-run/react";
 import { useState as useState2 } from "react";
 import { jsxDEV as jsxDEV5 } from "react/jsx-dev-runtime";
 var meta2 = () => [
@@ -1202,7 +1522,7 @@ function Contact() {
         columnNumber: 13
       }, this),
       /* @__PURE__ */ jsxDEV5("div", { className: "mt-3", children: /* @__PURE__ */ jsxDEV5(
-        Form2,
+        Form,
         {
           method: "post",
           onSubmit: handleSubmit,
@@ -1717,7 +2037,7 @@ function Index() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-LMX6HS7O.js", imports: ["/build/_shared/chunk-O4BRYNJ4.js", "/build/_shared/chunk-K23C2BAP.js", "/build/_shared/chunk-U7VO7F7C.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-U4FRFQSK.js", "/build/_shared/chunk-XGOTYLZ5.js", "/build/_shared/chunk-7M6SC7J5.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-KAPTIBJF.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-YEUWFWII.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-7PCVLZG5.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-XZEMG2IW.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-IONOIAPZ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "515ced82", hmr: { runtime: "/build/_shared/chunk-U7VO7F7C.js", timestamp: 1741293007676 }, url: "/build/manifest-515CED82.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-LMX6HS7O.js", imports: ["/build/_shared/chunk-O4BRYNJ4.js", "/build/_shared/chunk-K23C2BAP.js", "/build/_shared/chunk-U7VO7F7C.js", "/build/_shared/chunk-UWV35TSL.js", "/build/_shared/chunk-U4FRFQSK.js", "/build/_shared/chunk-XGOTYLZ5.js", "/build/_shared/chunk-7M6SC7J5.js", "/build/_shared/chunk-PNG5AS42.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-SPVACRZA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-YEUWFWII.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-7PCVLZG5.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-X5O4I6UV.js", imports: void 0, hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-IONOIAPZ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "20f97729", hmr: { runtime: "/build/_shared/chunk-U7VO7F7C.js", timestamp: 1741297779323 }, url: "/build/manifest-20F97729.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

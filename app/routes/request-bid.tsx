@@ -1,21 +1,192 @@
 import type { ActionFunction } from "@remix-run/node";
-import { Form } from "@remix-run/react";
-import React, { useState } from "react";
+import { json } from "@remix-run/node";
+import { useFetcher } from "@remix-run/react";
+import React, { useState, useEffect } from "react";
+import { Resend } from "resend";
+
+// Define the shape of our form data
+interface BidRequestForm {
+  name: string;
+  email: string;
+  phone: string;
+  contactPreference: string;
+  projectType: string;
+  projectDescription: string;
+  timeline: string;
+}
+
+// Define the response type
+interface ActionResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+  emailId?: string;
+}
+
+// Server-side action to handle form submission
+export const action: ActionFunction = async ({ request }) => {
+  // Initialize Resend with your API key - only on server side
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  const formData = await request.formData();
+
+  // Safely extract and validate form data
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const phone = formData.get("phone");
+  const contactPreference = formData.get("contactPreference");
+  const projectType = formData.get("projectType");
+  const projectDescription = formData.get("projectDescription");
+  const timeline = formData.get("timeline");
+
+  // Validate all required fields are present and are strings
+  if (
+    !name ||
+    !email ||
+    !phone ||
+    !contactPreference ||
+    !projectType ||
+    !projectDescription ||
+    !timeline ||
+    typeof name !== "string" ||
+    typeof email !== "string" ||
+    typeof phone !== "string" ||
+    typeof contactPreference !== "string" ||
+    typeof projectType !== "string" ||
+    typeof projectDescription !== "string" ||
+    typeof timeline !== "string"
+  ) {
+    return json(
+      { success: false, error: "All fields are required and must be valid." },
+      { status: 400 }
+    );
+  }
+
+  const data: BidRequestForm = {
+    name,
+    email,
+    phone,
+    contactPreference: contactPreference as string,
+    projectType,
+    projectDescription,
+    timeline,
+  };
+
+  try {
+    const { data: resendData, error } = await resend.emails.send({
+      from: "Grit Construction <onboarding@resend.dev>",
+      to: ["gritconstruction2023@gmail.com", "stoney.harward@gmail.com"],
+      subject: `New Bid Request from ${
+        data.name.charAt(0).toUpperCase() + data.name.slice(1)
+      }`,
+      html: `
+        <h2>New Bid Request</h2>
+        <p><strong>Name:</strong> ${
+          data.name.charAt(0).toUpperCase() + data.name.slice(1)
+        }</p>
+        <p><strong>Email:</strong> ${data.email.toLowerCase()}</p>
+        <p><strong>Phone:</strong> ${data.phone}</p>
+        <p><strong>Preferred Contact Method:</strong> ${
+          data.contactPreference.charAt(0).toUpperCase() +
+          data.contactPreference.slice(1)
+        }</p>
+        <p><strong>Project Type:</strong> ${
+          data.projectType.charAt(0).toUpperCase() + data.projectType.slice(1)
+        }</p>
+        <p><strong>Project Description:</strong> ${
+          data.projectDescription.charAt(0).toUpperCase() +
+          data.projectDescription.slice(1)
+        }</p>
+        <p><strong>Desired Timeline:</strong> ${
+          data.timeline.charAt(0).toUpperCase() + data.timeline.slice(1)
+        }</p>
+      `,
+    });
+
+    if (error) {
+      return json(
+        {
+          success: false,
+          error: `Failed to send email: ${error.message}`,
+        },
+        { status: 500 }
+      );
+    }
+
+    return json(
+      {
+        success: true,
+        message: "Request sent successfully!",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to submit bid request. Please try again.",
+      },
+      { status: 500 }
+    );
+  }
+};
 
 export default function RequestBid() {
+  const fetcher = useFetcher<ActionResponse>();
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    contactPreference: "email",
     projectType: "",
     projectDescription: "",
     timeline: "",
   });
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
+  // Effect to handle successful form submission
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      setShowSuccess(true);
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        contactPreference: "email",
+        projectType: "",
+        projectDescription: "",
+        timeline: "",
+      });
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Hide after 3 seconds
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [fetcher.data]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formDataToSubmit = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSubmit.append(key, value);
+    });
+
+    fetcher.submit(formDataToSubmit, {
+      method: "post",
+      action: "/request-bid",
+    });
   };
 
   const handleChange = (
@@ -31,7 +202,33 @@ export default function RequestBid() {
   };
 
   return (
-    <div className="min-h-screen bg-black py-12">
+    <div className="min-h-screen bg-black py-12 relative">
+      {/* Success Notification Pill */}
+      <div
+        className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999] transition-all duration-500 ${
+          showSuccess
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        }`}
+      >
+        <div className="bg-green-500 text-white px-4 py-2 rounded-full shadow-2xl flex items-center text-sm font-medium">
+          <svg
+            className="w-4 h-4 mr-1.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+          {fetcher.data?.message || "Request Sent Successfully!"}
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="text-center">
@@ -44,8 +241,18 @@ export default function RequestBid() {
             </p>
           </div>
 
+          {fetcher.data?.error && (
+            <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {fetcher.data.error}
+            </div>
+          )}
+
           <div className="mt-12">
-            <Form method="post" onSubmit={handleSubmit} className="space-y-8">
+            <fetcher.Form
+              method="post"
+              onSubmit={handleSubmit}
+              className="space-y-8"
+            >
               <div>
                 <label
                   htmlFor="name"
@@ -98,6 +305,48 @@ export default function RequestBid() {
                   onChange={handleChange}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white mb-2">
+                  Preferred Contact Method
+                </label>
+                <div className="flex space-x-6">
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="email-preference"
+                      name="contactPreference"
+                      value="email"
+                      checked={formData.contactPreference === "email"}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                    />
+                    <label
+                      htmlFor="email-preference"
+                      className="ml-2 text-sm text-white"
+                    >
+                      Email
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="phone-preference"
+                      name="contactPreference"
+                      value="phone"
+                      checked={formData.contactPreference === "phone"}
+                      onChange={handleChange}
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                    />
+                    <label
+                      htmlFor="phone-preference"
+                      className="ml-2 text-sm text-white"
+                    >
+                      Phone
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -163,12 +412,43 @@ export default function RequestBid() {
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  disabled={fetcher.state !== "idle"}
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                    fetcher.state !== "idle"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  }`}
                 >
-                  Submit Request
+                  {fetcher.state !== "idle" ? (
+                    <div className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Submitting...
+                    </div>
+                  ) : (
+                    "Submit Request"
+                  )}
                 </button>
               </div>
-            </Form>
+            </fetcher.Form>
           </div>
         </div>
       </div>
