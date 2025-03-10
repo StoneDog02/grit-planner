@@ -22,13 +22,41 @@ const requestHandler = createRequestHandler({
 
 export const handler = async (event, context) => {
   try {
+    // Construct a valid URL from the event
+    const url = new URL(
+      event.rawUrl ||
+        `${event.headers["x-forwarded-proto"] || "https"}://${
+          event.headers.host
+        }${event.path}`
+    );
+
+    // Add query parameters if they exist
+    if (event.queryStringParameters) {
+      Object.entries(event.queryStringParameters).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
+    }
+
+    // Create a new request object with the proper URL
+    const request = new Request(url.toString(), {
+      method: event.httpMethod,
+      headers: new Headers(event.headers),
+      body:
+        event.body && event.httpMethod !== "GET" && event.httpMethod !== "HEAD"
+          ? event.isBase64Encoded
+            ? Buffer.from(event.body, "base64").toString("utf8")
+            : event.body
+          : undefined,
+    });
+
     console.log("Handling request:", {
+      url: url.toString(),
       path: event.path,
       httpMethod: event.httpMethod,
       headers: event.headers,
     });
 
-    const response = await requestHandler(event, context);
+    const response = await requestHandler(request, context);
 
     console.log("Response:", {
       statusCode: response.statusCode,
