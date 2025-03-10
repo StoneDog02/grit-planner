@@ -4,10 +4,11 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
+    "build": "npm run generate:css && remix build",
     "dev": "dotenv -e .env -- remix dev",
     "start": "cross-env NODE_ENV=production netlify dev",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "generate:css": "tailwindcss -o ./app/styles/tailwind.css"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
