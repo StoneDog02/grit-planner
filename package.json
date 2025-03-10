@@ -4,10 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "npm run build:css && remix build",
-    "build:css": "tailwindcss -m -i ./app/styles.css -o ./app/tailwind.css",
-    "dev": "concurrently \"npm run dev:css\" \"dotenv -e .env -- remix dev\"",
-    "dev:css": "tailwindcss -w -i ./app/styles.css -o ./app/tailwind.css",
+    "build": "remix build",
+    "dev": "dotenv -e .env -- remix dev",
     "start": "cross-env NODE_ENV=production netlify dev",
     "typecheck": "tsc"
   },
