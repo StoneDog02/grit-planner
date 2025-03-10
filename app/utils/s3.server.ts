@@ -23,7 +23,7 @@ if (!process.env.AWS_BUCKET_NAME) {
   throw new Error("AWS_BUCKET_NAME is not configured");
 }
 
-const s3Client = new S3Client({
+export const s3Client = new S3Client({
   region: process.env.MY_AWS_REGION,
   credentials: {
     accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
