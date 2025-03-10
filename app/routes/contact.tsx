@@ -38,19 +38,19 @@ export default function Contact() {
   };
 
   return (
-    <div className="bg-black">
+    <div className="bg-white">
       <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-lg mx-auto md:max-w-none md:grid md:grid-cols-2 md:gap-8">
           <div>
-            <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
+            <h2 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">
               Contact Information
             </h2>
             <div className="mt-3">
-              <p className="text-lg text-white">
+              <p className="text-lg text-gray-700">
                 Get in touch with us for any questions about our services or to
                 discuss your project.
               </p>
-              <dl className="mt-8 text-base text-white">
+              <dl className="mt-8 text-base text-gray-700">
                 <div>
                   <dt className="sr-only">Phone number</dt>
                   <dd className="flex">
@@ -122,7 +122,7 @@ export default function Contact() {
             </div>
           </div>
           <div className="mt-12 sm:mt-16 md:mt-0">
-            <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
+            <h2 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">
               Send us a message
             </h2>
             <div className="mt-3">
@@ -134,7 +134,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-white"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Name
                   </label>
@@ -146,7 +146,7 @@ export default function Contact() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="py-3 px-4 block w-full shadow-sm focus:ring-red-500 focus:border-red-500 border-gray-300 rounded-md"
+                      className="py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
                     />
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-white"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Email
                   </label>
@@ -166,7 +166,7 @@ export default function Contact() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="py-3 px-4 block w-full shadow-sm focus:ring-red-500 focus:border-red-500 border-gray-300 rounded-md"
+                      className="py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
                     />
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="phone"
-                    className="block text-sm font-medium text-white"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Phone
                   </label>
@@ -186,7 +186,7 @@ export default function Contact() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      className="py-3 px-4 block w-full shadow-sm focus:ring-red-500 focus:border-red-500 border-gray-300 rounded-md"
+                      className="py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
                     />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function Contact() {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-white"
+                    className="block text-sm font-medium text-gray-700"
                   >
                     Message
                   </label>
@@ -206,7 +206,7 @@ export default function Contact() {
                       required
                       value={formData.message}
                       onChange={handleChange}
-                      className="py-3 px-4 block w-full shadow-sm focus:ring-red-500 focus:border-red-500 border-gray-300 rounded-md"
+                      className="py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
                     />
                   </div>
                 </div>

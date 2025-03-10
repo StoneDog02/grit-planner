@@ -98,8 +98,17 @@ const services = [
 
 export default function Services() {
   return (
-    <div className="bg-black">
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: `url('https://images.pexels.com/photos/7061662/pexels-photo-7061662.jpeg')`,
+      }}
+    >
+      {/* Dark overlay - using a lighter opacity for better visibility */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      {/* Content */}
+      <div className="relative max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h2 className="text-base text-red-600 font-semibold tracking-wide uppercase">
             Our Services
@@ -117,7 +126,7 @@ export default function Services() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2">
             {services.map((service) => (
               <div key={service.title} className="relative">
-                <div className="relative bg-white p-6 rounded-lg shadow-lg">
+                <div className="relative bg-white bg-opacity-90 backdrop-blur-sm p-6 rounded-lg shadow-lg">
                   <div className="absolute top-0 left-0 -mt-4 -ml-4">
                     <div className="flex items-center justify-center h-8 w-8 rounded-full bg-red-600 text-white">
                       {service.icon}

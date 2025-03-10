@@ -6,13 +6,20 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import React from "react";
 import styles from "./styles.css";
+import Layout from "./components/Layout";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
 
+export const loader: LoaderFunction = () => {
+  console.log("Root loader called");
+  return null;
+};
+
 export default function App() {
+  console.log("Root component rendered");
   return (
     <html lang="en">
       <head>
@@ -21,50 +28,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen bg-black">
-        <header className="bg-white shadow">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex">
-                <div className="flex-shrink-0 flex items-center">
-                  <h1 className="text-2xl font-bold text-black">
-                    Grit Construction
-                  </h1>
-                </div>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <a
-                    href="/"
-                    className="text-black inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-red-600"
-                  >
-                    Home
-                  </a>
-                  <a
-                    href="/services"
-                    className="text-black inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-red-600"
-                  >
-                    Services
-                  </a>
-                  <a
-                    href="/request-bid"
-                    className="text-black inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-red-600"
-                  >
-                    Request a Bid
-                  </a>
-                  <a
-                    href="/contact"
-                    className="text-black inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-red-600"
-                  >
-                    Contact
-                  </a>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </header>
-
-        <main>
+      <body className="min-h-screen">
+        <Layout>
           <Outlet />
-        </main>
+        </Layout>
 
         <footer className="bg-white">
           <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">

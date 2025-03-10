@@ -17,16 +17,26 @@ export default function Index() {
   return (
     <div className="relative">
       {/* Hero section */}
-      <div className="relative bg-black overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative z-10 pb-8 bg-black sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-            <main className="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+      <div className="relative h-[600px]">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2"
+            alt="Luxury wrap-around deck"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+        <div className="relative h-full max-w-7xl mx-auto">
+          <div className="relative z-10 h-full flex items-center">
+            <main className="w-full mx-auto px-4 sm:px-6 lg:px-8">
               <div className="sm:text-center lg:text-left">
-                <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+                <h1 className="text-4xl tracking-tight font-extrabold text-white drop-shadow-lg sm:text-5xl md:text-6xl">
                   <span className="block">Quality Construction</span>
-                  <span className="block text-red-600">Built with Grit</span>
+                  <span className="block text-red-600 drop-shadow-lg">
+                    Built with Grit
+                  </span>
                 </h1>
-                <p className="mt-3 text-base text-white sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                <p className="mt-3 text-base text-white drop-shadow sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
                   Professional general contracting and framing services for your
                   residential and commercial projects. Get expert craftsmanship
                   and reliable service.

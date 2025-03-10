@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     const { data: resendData, error } = await resend.emails.send({
       from: "Grit Construction <onboarding@resend.dev>",
-      to: ["gritconstruction2023@gmail.com", "stoney.harward@gmail.com"],
+      to: ["stoney.harward@gmail.com"],
       subject: `New Bid Request from ${
         data.name.charAt(0).toUpperCase() + data.name.slice(1)
       }`,
@@ -202,7 +202,15 @@ export default function RequestBid() {
   };
 
   return (
-    <div className="min-h-screen bg-black py-12 relative">
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative py-12"
+      style={{
+        backgroundImage: `url('https://images.pexels.com/photos/7031595/pexels-photo-7031595.jpeg')`,
+      }}
+    >
+      {/* Dark overlay for better readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
       {/* Success Notification Pill */}
       <div
         className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-[9999] transition-all duration-500 ${
@@ -229,7 +237,7 @@ export default function RequestBid() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
