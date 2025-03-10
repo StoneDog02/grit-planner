@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix build",
-    "dev": "NODE_ENV=development DEBUG=remix:* remix dev",
+    "dev": "dotenv -e .env -- remix dev",
     "start": "cross-env NODE_ENV=production netlify dev",
     "typecheck": "tsc"
   },
@@ -33,6 +33,7 @@
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "typescript": "^5.1.6"
   },
   "engines": {
