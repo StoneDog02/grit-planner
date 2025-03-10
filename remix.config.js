@@ -20,5 +20,5 @@ export default {
   appDirectory: "app",
   assetsBuildDirectory: "public/build",
   publicPath: "/build/",
-  serverBuildPath: ".netlify/functions-internal/server.js",
+  serverBuildPath: "netlify/functions/server/build.js",
 };
