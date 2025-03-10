@@ -11,7 +11,10 @@ import React from "react";
 import styles from "./styles/tailwind.css";
 import Layout from "./components/Layout";
 
-export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: styles },
+  { rel: "icon", type: "image/svg+xml", href: "/images/logo.svg" },
+];
 
 export const loader: LoaderFunction = () => {
   console.log("Root loader called");
