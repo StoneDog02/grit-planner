@@ -8,7 +8,7 @@ if (!sessionSecret) {
 const storage = createCookieSessionStorage({
   cookie: {
     name: "GRIT_admin_session",
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
@@ -33,6 +33,10 @@ export async function createUserSession({
   });
 }
 
+export async function getUserSession(request: Request) {
+  return storage.getSession(request.headers.get("Cookie"));
+}
+
 export async function requireAdminUser(request: Request) {
   const session = await getUserSession(request);
   const username = session.get("username");
@@ -42,10 +46,6 @@ export async function requireAdminUser(request: Request) {
   }
 
   return username;
-}
-
-export async function getUserSession(request: Request) {
-  return storage.getSession(request.headers.get("Cookie"));
 }
 
 export async function logout(request: Request) {
