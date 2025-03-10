@@ -37,10 +37,23 @@ export const handler = async (event, context) => {
       });
     }
 
+    // Set proper content type for static assets
+    const path = event.path;
+    let contentType = "text/html; charset=utf-8";
+
+    if (path.endsWith(".js")) {
+      contentType = "application/javascript; charset=utf-8";
+    } else if (path.endsWith(".css")) {
+      contentType = "text/css; charset=utf-8";
+    }
+
     // Create a new request object with the proper URL
     const request = new Request(url.toString(), {
       method: event.httpMethod,
-      headers: new Headers(event.headers),
+      headers: new Headers({
+        ...event.headers,
+        "content-type": contentType,
+      }),
       body:
         event.body && event.httpMethod !== "GET" && event.httpMethod !== "HEAD"
           ? event.isBase64Encoded
@@ -53,28 +66,22 @@ export const handler = async (event, context) => {
       url: url.toString(),
       path: event.path,
       httpMethod: event.httpMethod,
+      contentType,
       headers: event.headers,
     });
 
     const response = await requestHandler(request, context);
 
-    console.log("Response:", {
-      statusCode: response.statusCode,
-      hasBody: !!response.body,
-      headers: response.headers,
-    });
-
-    // Convert the response to the format Netlify expects
-    const body = response.body
-      ? typeof response.body === "string"
-        ? response.body
-        : await response.text()
-      : "";
+    // Ensure correct content type is preserved in response
+    const responseHeaders = {
+      ...response.headers,
+      "content-type": response.headers.get("content-type") || contentType,
+    };
 
     return {
       statusCode: response.statusCode || 200,
-      headers: response.headers,
-      body: body,
+      headers: responseHeaders,
+      body: await response.text(),
     };
   } catch (error) {
     console.error("Error in server function:", error);
