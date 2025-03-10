@@ -20,6 +20,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["server/build/**/*"]
   external_node_modules = ["@remix-run/dev"]
 
 [build.environment]

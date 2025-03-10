@@ -1,4 +1,4 @@
-import { createRequestHandler } from "@remix-run/netlify";
+import { createRequestHandler } from "@netlify/remix-adapter";
 import * as build from "./build.js";
 
 // Log environment variables (without sensitive values)
@@ -13,6 +13,11 @@ console.log("Server Environment Check:", {
 const requestHandler = createRequestHandler({
   build,
   mode: process.env.NODE_ENV,
+  getLoadContext: (event, context) => ({
+    env: process.env,
+    context,
+    event,
+  }),
 });
 
 export const handler = async (event, context) => {
