@@ -17,7 +17,6 @@ export default {
   tailwind: true,
   postcss: true,
   serverBuildTarget: "netlify",
-  server: "./server.js",
   appDirectory: "app",
   assetsBuildDirectory: "public/build",
   publicPath: "/build/",
