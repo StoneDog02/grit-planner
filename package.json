@@ -4,8 +4,10 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
-    "dev": "dotenv -e .env -- remix dev",
+    "build": "npm run build:css && remix build",
+    "build:css": "tailwindcss -m -i ./app/styles.css -o ./app/tailwind.css",
+    "dev": "concurrently \"npm run dev:css\" \"dotenv -e .env -- remix dev\"",
+    "dev:css": "tailwindcss -w -i ./app/styles.css -o ./app/tailwind.css",
     "start": "cross-env NODE_ENV=production netlify dev",
     "typecheck": "tsc"
   },
@@ -32,6 +34,7 @@
     "@netlify/functions": "^2.8.2",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "dotenv-cli": "^8.0.0",
     "typescript": "^5.1.6"

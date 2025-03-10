@@ -8,7 +8,7 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import React from "react";
-import styles from "./styles.css";
+import styles from "./tailwind.css";
 import Layout from "./components/Layout";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
