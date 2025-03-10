@@ -22,5 +22,5 @@
   NODE_ENV = "production"
   ADMIN_USERNAME = "admin-grit-construction"
   ADMIN_PASSWORD_HASH = "$2a$10$1D0eQDyE3G3wLoU2L2i3De2l0Vyi9F27hiOLl/fSt8DReuR00mUSC"
-  AWS_REGION = "us-east-2"
+  MY_AWS_REGION = "us-east-2"
   AWS_BUCKET_NAME = "grit-construction-gallery" 
