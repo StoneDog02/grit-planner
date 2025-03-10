@@ -64,11 +64,17 @@ export const handler = async (event, context) => {
       headers: response.headers,
     });
 
-    // Ensure we always return a valid response
+    // Convert the response to the format Netlify expects
+    const body = response.body
+      ? typeof response.body === "string"
+        ? response.body
+        : await response.text()
+      : "";
+
     return {
-      ...response,
       statusCode: response.statusCode || 200,
-      body: response.body || "",
+      headers: response.headers,
+      body: body,
     };
   } catch (error) {
     console.error("Error in server function:", error);
