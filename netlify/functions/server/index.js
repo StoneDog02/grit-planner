@@ -1,4 +1,4 @@
-import { createRequestHandler } from "@netlify/remix-adapter";
+import { createRequestHandler } from "@remix-run/netlify";
 import * as build from "./build.js";
 
 // Log environment variables (without sensitive values)
@@ -10,16 +10,9 @@ console.log("Server Environment Check:", {
   hasBucketName: !!process.env.AWS_BUCKET_NAME,
 });
 
-const remixHandler = createRequestHandler({
+const requestHandler = createRequestHandler({
   build,
   mode: process.env.NODE_ENV,
-  getLoadContext: (event, context) => {
-    return {
-      env: process.env,
-      context,
-      event,
-    };
-  },
 });
 
 export const handler = async (event, context) => {
@@ -30,7 +23,7 @@ export const handler = async (event, context) => {
       headers: event.headers,
     });
 
-    const response = await remixHandler(event, context);
+    const response = await requestHandler(event, context);
 
     console.log("Response:", {
       statusCode: response.statusCode,
@@ -38,19 +31,23 @@ export const handler = async (event, context) => {
       headers: response.headers,
     });
 
-    return response;
+    // Ensure we always return a valid response
+    return {
+      ...response,
+      statusCode: response.statusCode || 200,
+      body: response.body || "",
+    };
   } catch (error) {
-    console.error("Server error:", {
-      error: error.message,
-      stack: error.stack,
-    });
-
+    console.error("Error in server function:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Internal Server Error" }),
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        error: "Internal Server Error",
+        message: error.message,
+      }),
     };
   }
 };

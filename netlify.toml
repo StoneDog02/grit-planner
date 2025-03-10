@@ -11,6 +11,7 @@
   from = "/*"
   to = "/.netlify/functions/server"
   status = 200
+  force = true
 
 [[headers]]
   for = "/build/*"
@@ -19,6 +20,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["@remix-run/dev"]
 
 [build.environment]
   NODE_ENV = "production"
