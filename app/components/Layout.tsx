@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
       <header className="bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Desktop Header */}
-          <div className="hidden sm:flex sm:justify-between sm:h-16">
+          <div className="hidden lg:flex lg:justify-between lg:h-16">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="text-2xl font-bold text-gray-900">
                 GRIT
@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
 
           {/* Mobile Header */}
-          <div className="flex justify-between h-16 sm:hidden">
+          <div className="flex lg:hidden justify-between h-16">
             <div className="flex items-center">
               <button
                 type="button"
@@ -99,12 +99,11 @@ export default function Layout({ children }: LayoutProps) {
               </Link>
             </div>
 
-            {/* Empty div for mobile layout balance */}
             <div className="flex-1"></div>
           </div>
 
           {/* Mobile menu dropdown */}
-          <div className={`sm:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
+          <div className={`lg:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
             <div className="pt-2 pb-3 space-y-1">
               {navigation.map((item) => {
                 const isActive =
