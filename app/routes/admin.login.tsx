@@ -12,16 +12,29 @@ interface ActionData {
 export const loader: LoaderFunction = async ({ request }) => {
   console.log("Login page loaded - TESTING");
 
-  // Check if already logged in
-  const session = await getUserSession(request);
-  const username = session.get("username");
+  try {
+    // Check if already logged in
+    const session = await getUserSession(request);
+    const username = session.get("username");
 
-  if (username === process.env.ADMIN_USERNAME) {
-    // If already logged in, redirect to upload page
-    return redirect("/admin/upload");
+    console.log("Login loader check:", {
+      hasSession: !!session,
+      username,
+      expectedUsername: process.env.ADMIN_USERNAME,
+      matches: username === process.env.ADMIN_USERNAME,
+    });
+
+    if (username === process.env.ADMIN_USERNAME) {
+      // If already logged in, redirect to upload page
+      console.log("User already logged in, redirecting to upload");
+      return redirect("/admin/upload");
+    }
+
+    return json({ message: "Login page loaded" });
+  } catch (error) {
+    console.error("Login loader error:", error);
+    return json({ message: "Login page loaded" });
   }
-
-  return json({ message: "Login page loaded" });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -94,6 +107,10 @@ export const action: ActionFunction = async ({ request }) => {
     }
 
     console.log("Login successful, creating session...");
+    // Clear any existing session first
+    const session = await getUserSession(request);
+    await session.unset("username");
+
     return createUserSession({
       username: username.toString(),
       redirectTo: "/admin/upload",

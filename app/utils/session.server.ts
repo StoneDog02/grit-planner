@@ -8,12 +8,13 @@ if (!sessionSecret) {
 const storage = createCookieSessionStorage({
   cookie: {
     name: "GRIT_admin_session",
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
     httpOnly: true,
+    domain: process.env.NODE_ENV === "production" ? ".netlify.app" : undefined,
   },
 });
 
@@ -34,15 +35,28 @@ export async function createUserSession({
 }
 
 export async function getUserSession(request: Request) {
-  return storage.getSession(request.headers.get("Cookie"));
+  const cookie = request.headers.get("Cookie");
+  return storage.getSession(cookie);
 }
 
 export async function requireAdminUser(request: Request) {
   const session = await getUserSession(request);
   const username = session.get("username");
 
+  console.log("Session check:", {
+    hasSession: !!session,
+    username,
+    expectedUsername: process.env.ADMIN_USERNAME,
+    matches: username === process.env.ADMIN_USERNAME,
+  });
+
   if (!username || username !== process.env.ADMIN_USERNAME) {
-    throw redirect("/admin/login");
+    // Clear any existing session before redirecting
+    throw redirect("/admin/login", {
+      headers: {
+        "Set-Cookie": await storage.destroySession(session),
+      },
+    });
   }
 
   return username;
