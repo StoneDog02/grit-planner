@@ -87,7 +87,7 @@ export const action: ActionFunction = async ({ request }) => {
     console.log("Upload successful:", { imageUrl });
 
     // Save image metadata to our gallery data
-    const savedImage = addImage({
+    const savedImage = await addImage({
       src: imageUrl,
       alt,
       category,

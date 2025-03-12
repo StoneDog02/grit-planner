@@ -17,7 +17,7 @@ interface ActionData {
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAdminUser(request);
-  const images = getAllImages();
+  const images = await getAllImages();
   return json({ images });
 };
 
@@ -33,7 +33,7 @@ export const action: ActionFunction = async ({ request }) => {
       return json({ error: "Image ID is required" }, { status: 400 });
     }
 
-    const success = deleteImage(imageId);
+    const success = await deleteImage(imageId);
     if (!success) {
       return json({ error: "Failed to delete image" }, { status: 400 });
     }
@@ -53,7 +53,7 @@ export const action: ActionFunction = async ({ request }) => {
       );
     }
 
-    const updated = updateImage(imageId, { category, alt });
+    const updated = await updateImage(imageId, { category, alt });
     if (!updated) {
       return json({ error: "Failed to update image" }, { status: 400 });
     }

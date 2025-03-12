@@ -5,7 +5,7 @@ import { getAllImages, type GalleryImage } from "../models/gallery.server";
 import type { LoaderFunction } from "@remix-run/node";
 
 export const loader: LoaderFunction = async () => {
-  const images = getAllImages();
+  const images = await getAllImages();
   return json({ images });
 };
 
