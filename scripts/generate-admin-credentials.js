@@ -1,5 +1,5 @@
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 // Generate a secure session secret
 const sessionSecret = crypto.randomBytes(32).toString("hex");

@@ -48,7 +48,22 @@ export function updateImage(
 export function deleteImage(id: string): boolean {
   const initialLength = galleryImages.length;
   galleryImages = galleryImages.filter((img) => img.id !== id);
-  return galleryImages.length !== initialLength;
+
+  // Persist changes to gallery.json
+  const fs = require("fs");
+  const path = require("path");
+  const dataFilePath = path.join(process.cwd(), "app/data/gallery.json");
+
+  try {
+    fs.writeFileSync(
+      dataFilePath,
+      JSON.stringify({ images: galleryImages }, null, 2)
+    );
+    return galleryImages.length !== initialLength;
+  } catch (error) {
+    console.error("Failed to persist gallery changes:", error);
+    return false;
+  }
 }
 
 // Initialize with any existing data
