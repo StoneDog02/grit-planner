@@ -153,7 +153,7 @@ import {
 } from "@remix-run/react";
 
 // app/styles/tailwind.css
-var tailwind_default = "/build/_assets/tailwind-GFA5M36R.css";
+var tailwind_default = "/build/_assets/tailwind-6TVD62GX.css";
 
 // app/components/Layout.tsx
 import { useState } from "react";
@@ -168,79 +168,41 @@ function Layout({ children }) {
     { name: "Contact", href: "/contact" }
   ];
   return /* @__PURE__ */ jsxDEV2(Fragment, { children: [
-    /* @__PURE__ */ jsxDEV2("header", { className: "bg-white shadow-sm", children: /* @__PURE__ */ jsxDEV2("nav", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [
-      /* @__PURE__ */ jsxDEV2("div", { className: "hidden lg:flex lg:justify-between lg:h-16", children: [
-        /* @__PURE__ */ jsxDEV2("div", { className: "flex-shrink-0 flex items-center", children: /* @__PURE__ */ jsxDEV2(Link, { to: "/", className: "text-2xl font-bold text-gray-900", children: "GRIT" }, void 0, !1, {
-          fileName: "app/components/Layout.tsx",
-          lineNumber: 27,
-          columnNumber: 15
-        }, this) }, void 0, !1, {
-          fileName: "app/components/Layout.tsx",
-          lineNumber: 26,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV2("div", { className: "ml-6 flex space-x-8", children: navigation.map((item) => {
-          let isActive = item.href === "/" && location.pathname === "/" || item.href !== "/" && location.pathname.startsWith(item.href);
-          return /* @__PURE__ */ jsxDEV2(
-            Link,
-            {
-              to: item.href,
-              className: `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${isActive ? "border-red-500 text-gray-900" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"}`,
-              children: item.name
-            },
-            item.name,
-            !1,
-            {
-              fileName: "app/components/Layout.tsx",
-              lineNumber: 39,
-              columnNumber: 19
-            },
-            this
-          );
-        }) }, void 0, !1, {
-          fileName: "app/components/Layout.tsx",
-          lineNumber: 31,
-          columnNumber: 13
-        }, this)
-      ] }, void 0, !0, {
-        fileName: "app/components/Layout.tsx",
-        lineNumber: 25,
-        columnNumber: 11
-      }, this),
-      /* @__PURE__ */ jsxDEV2("div", { className: "flex lg:hidden justify-between h-16", children: [
-        /* @__PURE__ */ jsxDEV2("div", { className: "flex items-center", children: /* @__PURE__ */ jsxDEV2(
+    /* @__PURE__ */ jsxDEV2("header", { className: "bg-white shadow-sm", children: /* @__PURE__ */ jsxDEV2("nav", { className: "max-w-7xl mx-auto px-4", children: [
+      /* @__PURE__ */ jsxDEV2("div", { className: "flex h-16 justify-between items-center", children: [
+        /* @__PURE__ */ jsxDEV2("div", { className: "flex md:hidden", children: /* @__PURE__ */ jsxDEV2(
           "button",
           {
             type: "button",
-            className: "inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-red-500",
+            className: "inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100",
             onClick: () => setIsMobileMenuOpen(!isMobileMenuOpen),
             children: [
               /* @__PURE__ */ jsxDEV2("span", { className: "sr-only", children: "Open main menu" }, void 0, !1, {
                 fileName: "app/components/Layout.tsx",
-                lineNumber: 63,
+                lineNumber: 32,
                 columnNumber: 17
               }, this),
-              isMobileMenuOpen ? /* @__PURE__ */ jsxDEV2(
+              /* @__PURE__ */ jsxDEV2(
                 "svg",
                 {
                   className: "h-6 w-6",
                   fill: "none",
                   viewBox: "0 0 24 24",
+                  strokeWidth: "1.5",
                   stroke: "currentColor",
                   children: /* @__PURE__ */ jsxDEV2(
                     "path",
                     {
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
-                      strokeWidth: 2,
-                      d: "M6 18L18 6M6 6l12 12"
+                      d: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                     },
                     void 0,
                     !1,
                     {
                       fileName: "app/components/Layout.tsx",
-                      lineNumber: 85,
-                      columnNumber: 21
+                      lineNumber: 40,
+                      columnNumber: 19
                     },
                     this
                   )
@@ -249,41 +211,8 @@ function Layout({ children }) {
                 !1,
                 {
                   fileName: "app/components/Layout.tsx",
-                  lineNumber: 79,
-                  columnNumber: 19
-                },
-                this
-              ) : /* @__PURE__ */ jsxDEV2(
-                "svg",
-                {
-                  className: "h-6 w-6",
-                  fill: "none",
-                  viewBox: "0 0 24 24",
-                  stroke: "currentColor",
-                  children: /* @__PURE__ */ jsxDEV2(
-                    "path",
-                    {
-                      strokeLinecap: "round",
-                      strokeLinejoin: "round",
-                      strokeWidth: 2,
-                      d: "M4 6h16M4 12h16M4 18h16"
-                    },
-                    void 0,
-                    !1,
-                    {
-                      fileName: "app/components/Layout.tsx",
-                      lineNumber: 71,
-                      columnNumber: 21
-                    },
-                    this
-                  )
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/components/Layout.tsx",
-                  lineNumber: 65,
-                  columnNumber: 19
+                  lineNumber: 33,
+                  columnNumber: 17
                 },
                 this
               )
@@ -293,62 +222,112 @@ function Layout({ children }) {
           !0,
           {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 58,
+            lineNumber: 27,
             columnNumber: 15
           },
           this
         ) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 57,
+          lineNumber: 26,
           columnNumber: 13
         }, this),
-        /* @__PURE__ */ jsxDEV2("div", { className: "flex-1 flex items-center justify-center", children: /* @__PURE__ */ jsxDEV2(Link, { to: "/", className: "text-2xl font-bold text-gray-900", children: "GRIT" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV2("div", { className: "flex-1 flex items-center justify-center md:justify-start", children: [
+          /* @__PURE__ */ jsxDEV2(
+            Link,
+            {
+              to: "/",
+              className: "text-2xl font-bold text-gray-900 py-3 px-6",
+              children: "GRIT"
+            },
+            void 0,
+            !1,
+            {
+              fileName: "app/components/Layout.tsx",
+              lineNumber: 51,
+              columnNumber: 15
+            },
+            this
+          ),
+          /* @__PURE__ */ jsxDEV2("div", { className: "hidden md:flex md:ml-16", children: navigation.map((item) => {
+            let isActive = item.href === "/" && location.pathname === "/" || item.href !== "/" && location.pathname.startsWith(item.href);
+            return /* @__PURE__ */ jsxDEV2(
+              Link,
+              {
+                to: item.href,
+                className: `inline-flex items-center px-4 pt-1 border-b-2 text-sm font-medium mx-6 ${isActive ? "border-red-500 text-gray-900" : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"}`,
+                children: item.name
+              },
+              item.name,
+              !1,
+              {
+                fileName: "app/components/Layout.tsx",
+                lineNumber: 67,
+                columnNumber: 21
+              },
+              this
+            );
+          }) }, void 0, !1, {
+            fileName: "app/components/Layout.tsx",
+            lineNumber: 59,
+            columnNumber: 15
+          }, this)
+        ] }, void 0, !0, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 97,
+          lineNumber: 50,
+          columnNumber: 13
+        }, this),
+        /* @__PURE__ */ jsxDEV2("div", { className: "flex-1 flex justify-end md:hidden", children: /* @__PURE__ */ jsxDEV2("div", { className: "w-10" }, void 0, !1, {
+          fileName: "app/components/Layout.tsx",
+          lineNumber: 85,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 96,
-          columnNumber: 13
-        }, this),
-        /* @__PURE__ */ jsxDEV2("div", { className: "flex-1" }, void 0, !1, {
-          fileName: "app/components/Layout.tsx",
-          lineNumber: 102,
+          lineNumber: 84,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/components/Layout.tsx",
-        lineNumber: 56,
+        lineNumber: 24,
         columnNumber: 11
       }, this),
-      /* @__PURE__ */ jsxDEV2("div", { className: `lg:hidden ${isMobileMenuOpen ? "block" : "hidden"}`, children: /* @__PURE__ */ jsxDEV2("div", { className: "pt-2 pb-3 space-y-1", children: navigation.map((item) => {
-        let isActive = item.href === "/" && location.pathname === "/" || item.href !== "/" && location.pathname.startsWith(item.href);
-        return /* @__PURE__ */ jsxDEV2(
-          Link,
-          {
-            to: item.href,
-            className: `block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive ? "border-red-500 text-red-700 bg-red-50" : "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"}`,
-            onClick: () => setIsMobileMenuOpen(!1),
-            children: item.name
-          },
-          item.name,
-          !1,
-          {
+      /* @__PURE__ */ jsxDEV2(
+        "div",
+        {
+          className: `${isMobileMenuOpen ? "block" : "hidden"} md:hidden border-t border-gray-200`,
+          children: /* @__PURE__ */ jsxDEV2("div", { className: "pt-2 pb-3 space-y-1", children: navigation.map((item) => {
+            let isActive = item.href === "/" && location.pathname === "/" || item.href !== "/" && location.pathname.startsWith(item.href);
+            return /* @__PURE__ */ jsxDEV2(
+              Link,
+              {
+                to: item.href,
+                className: `block pl-3 pr-4 py-2 text-base font-medium ${isActive ? "bg-red-50 border-l-4 border-red-500 text-red-700" : "border-l-4 border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700"}`,
+                onClick: () => setIsMobileMenuOpen(!1),
+                children: item.name
+              },
+              item.name,
+              !1,
+              {
+                fileName: "app/components/Layout.tsx",
+                lineNumber: 103,
+                columnNumber: 19
+              },
+              this
+            );
+          }) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 115,
-            columnNumber: 19
-          },
-          this
-        );
-      }) }, void 0, !1, {
-        fileName: "app/components/Layout.tsx",
-        lineNumber: 107,
-        columnNumber: 13
-      }, this) }, void 0, !1, {
-        fileName: "app/components/Layout.tsx",
-        lineNumber: 106,
-        columnNumber: 11
-      }, this)
+            lineNumber: 95,
+            columnNumber: 13
+          }, this)
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/components/Layout.tsx",
+          lineNumber: 90,
+          columnNumber: 11
+        },
+        this
+      )
     ] }, void 0, !0, {
       fileName: "app/components/Layout.tsx",
       lineNumber: 23,
@@ -360,7 +339,7 @@ function Layout({ children }) {
     }, this),
     /* @__PURE__ */ jsxDEV2("main", { children }, void 0, !1, {
       fileName: "app/components/Layout.tsx",
-      lineNumber: 133,
+      lineNumber: 122,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
@@ -3367,7 +3346,7 @@ function Index() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-S4XJ73AQ.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-S7745XDI.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-JHIE77RU.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-EDRU3PYD.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-BLCSJGXW.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-MCXZYEQ3.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-ADS64OSM.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-FBPF6PFW.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-4X364NUA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "9f542d1c", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1741655234952 }, url: "/build/manifest-9F542D1C.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-73ZCJUAT.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-S7745XDI.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-CFLGZQ75.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-SM6CJU2Q.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-VHCICRTF.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-MCXZYEQ3.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-ADS64OSM.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-N34UJXX5.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-4X364NUA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "9530642c", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1741812045848 }, url: "/build/manifest-9530642C.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {
