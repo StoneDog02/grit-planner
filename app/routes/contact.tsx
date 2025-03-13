@@ -1,6 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Form } from "@remix-run/react";
-import React, { useState } from "react";
+import type { MetaFunction, ActionFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Form, useActionData, useFetcher } from "@remix-run/react";
+import React, { useState, useEffect } from "react";
+import { Resend } from "resend";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,7 +15,92 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+interface ActionData {
+  success?: boolean;
+  error?: string;
+  message?: string;
+}
+
+export const action: ActionFunction = async ({ request }) => {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const formData = await request.formData();
+
+  // Safely extract and validate form data
+  const name = formData.get("name");
+  const email = formData.get("email");
+  const phone = formData.get("phone");
+  const message = formData.get("message");
+
+  // Validate all required fields are present and are strings
+  if (
+    !name ||
+    !email ||
+    !phone ||
+    !message ||
+    typeof name !== "string" ||
+    typeof email !== "string" ||
+    typeof phone !== "string" ||
+    typeof message !== "string"
+  ) {
+    return json(
+      { success: false, error: "All fields are required and must be valid." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const { data: resendData, error } = await resend.emails.send({
+      from: "Grit Construction <onboarding@resend.dev>",
+      to: ["stoney.harward@gmail.com"],
+      subject: `New Contact Form Message from ${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }`,
+      html: `
+        <h2>New Contact Form Message</h2>
+        <p><strong>Name:</strong> ${
+          name.charAt(0).toUpperCase() + name.slice(1)
+        }</p>
+        <p><strong>Email:</strong> ${email.toLowerCase()}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    if (error) {
+      return json(
+        {
+          success: false,
+          error: `Failed to send email: ${error.message}`,
+        },
+        { status: 500 }
+      );
+    }
+
+    return json(
+      {
+        success: true,
+        message: "Message sent successfully!",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return json(
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to send message. Please try again.",
+      },
+      { status: 500 }
+    );
+  }
+};
+
 export default function Contact() {
+  const fetcher = useFetcher<ActionData>();
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,11 +108,30 @@ export default function Contact() {
     message: "",
   });
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    // Here you would typically send the form data to your backend
-    console.log("Form submitted:", formData);
-  };
+  // Effect to handle successful form submission
+  useEffect(() => {
+    if (fetcher.data?.success) {
+      setShowSuccess(true);
+
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Hide after 3 seconds
+      const timer = setTimeout(() => {
+        setShowSuccess(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [fetcher.data]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,6 +141,20 @@ export default function Contact() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formDataToSubmit = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSubmit.append(key, value);
+    });
+
+    fetcher.submit(formDataToSubmit, {
+      method: "post",
+      action: "/contact",
+    });
   };
 
   return (
@@ -126,7 +246,19 @@ export default function Contact() {
               Send us a message
             </h2>
             <div className="mt-3">
-              <Form
+              {fetcher.data?.error && (
+                <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                  {fetcher.data.error}
+                </div>
+              )}
+
+              {showSuccess && (
+                <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                  {fetcher.data?.message}
+                </div>
+              )}
+
+              <fetcher.Form
                 method="post"
                 onSubmit={handleSubmit}
                 className="grid grid-cols-1 gap-y-6"
@@ -214,12 +346,39 @@ export default function Contact() {
                 <div>
                   <button
                     type="submit"
-                    className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    disabled={fetcher.state === "submitting"}
+                    className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Send Message
+                    {fetcher.state === "submitting" ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Message"
+                    )}
                   </button>
                 </div>
-              </Form>
+              </fetcher.Form>
             </div>
           </div>
         </div>

@@ -1,36 +1,8 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __require = /* @__PURE__ */ ((x) => typeof require < "u" ? require : typeof Proxy < "u" ? new Proxy(x, {
-  get: (a, b) => (typeof require < "u" ? require : a)[b]
-}) : x)(function(x) {
-  if (typeof require < "u")
-    return require.apply(this, arguments);
-  throw new Error('Dynamic require of "' + x + '" is not supported');
-});
-var __commonJS = (cb, mod) => function() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: !0 });
 };
-
-// app/data/gallery.json
-var require_gallery = __commonJS({
-  "app/data/gallery.json"(exports, module) {
-    module.exports = {
-      images: [
-        {
-          src: "https://grit-construction-gallery.s3.us-east-2.amazonaws.com/1741399400248-Air_Compressors_and_Tools.webp",
-          alt: "Air Compressor Tool",
-          category: "Framing",
-          id: "1741399401252",
-          createdAt: "2025-03-08T02:03:21.252Z"
-        }
-      ]
-    };
-  }
-});
 
 // node_modules/@remix-run/dev/dist/config/defaults/entry.server.node.tsx
 var entry_server_node_exports = {};
@@ -499,64 +471,120 @@ async function requireAdminUser(request) {
 }
 
 // app/models/gallery.server.ts
-var galleryImages = [];
-function getAllImages() {
-  return galleryImages;
+import { GetObjectCommand, PutObjectCommand as PutObjectCommand2 } from "@aws-sdk/client-s3";
+
+// app/utils/s3.server.ts
+import { S3Client } from "@aws-sdk/client-s3";
+console.log("S3 Configuration Check:", {
+  hasRegion: !!process.env.MY_AWS_REGION,
+  hasAccessKey: !!process.env.MY_AWS_ACCESS_KEY_ID,
+  hasSecretKey: !!process.env.MY_AWS_SECRET_KEY,
+  hasBucketName: !!process.env.AWS_BUCKET_NAME,
+  region: process.env.MY_AWS_REGION,
+  bucketName: process.env.AWS_BUCKET_NAME
+});
+if (!process.env.MY_AWS_REGION)
+  throw new Error("MY_AWS_REGION is not configured");
+if (!process.env.MY_AWS_ACCESS_KEY_ID)
+  throw new Error("MY_AWS_ACCESS_KEY_ID is not configured");
+if (!process.env.MY_AWS_SECRET_KEY)
+  throw new Error("MY_AWS_SECRET_KEY is not configured");
+if (!process.env.AWS_BUCKET_NAME)
+  throw new Error("AWS_BUCKET_NAME is not configured");
+var s3Client = new S3Client({
+  region: process.env.MY_AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.MY_AWS_SECRET_KEY
+  }
+});
+s3Client.config.credentials().then(
+  (creds) => {
+    console.log("S3 client configured successfully");
+  },
+  (error) => {
+    console.error("S3 client configuration error:", error);
+  }
+);
+var AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME, AWS_REGION = process.env.MY_AWS_REGION;
+
+// app/models/gallery.server.ts
+var galleryImages = [], GALLERY_METADATA_KEY = "gallery-metadata.json";
+async function loadGalleryFromS3() {
+  try {
+    let command = new GetObjectCommand({
+      Bucket: AWS_BUCKET_NAME,
+      Key: GALLERY_METADATA_KEY
+    }), data = await (await s3Client.send(command)).Body?.transformToString();
+    if (data) {
+      let parsedData = JSON.parse(data);
+      parsedData && Array.isArray(parsedData.images) && (galleryImages = parsedData.images);
+    }
+  } catch (error) {
+    if (error.name === "NoSuchKey")
+      galleryImages = [], await saveGalleryToS3();
+    else
+      throw console.error("Error loading gallery data from S3:", error), error;
+  }
 }
-function addImage(image) {
+async function saveGalleryToS3() {
+  try {
+    let command = new PutObjectCommand2({
+      Bucket: AWS_BUCKET_NAME,
+      Key: GALLERY_METADATA_KEY,
+      Body: JSON.stringify({ images: galleryImages }, null, 2),
+      ContentType: "application/json"
+    });
+    await s3Client.send(command);
+  } catch (error) {
+    throw console.error("Error saving gallery data to S3:", error), error;
+  }
+}
+loadGalleryFromS3().catch(console.error);
+async function getAllImages() {
+  return await loadGalleryFromS3(), galleryImages;
+}
+async function addImage(image) {
   let newImage = {
     ...image,
     id: Date.now().toString(),
     createdAt: (/* @__PURE__ */ new Date()).toISOString()
   };
-  return galleryImages.push(newImage), newImage;
+  return galleryImages.push(newImage), await saveGalleryToS3(), newImage;
 }
-function updateImage(id, updates) {
+async function updateImage(id, updates) {
   let index = galleryImages.findIndex((img) => img.id === id);
   return index === -1 ? null : (galleryImages[index] = {
     ...galleryImages[index],
     ...updates
-  }, galleryImages[index]);
+  }, await saveGalleryToS3(), galleryImages[index]);
 }
-function deleteImage(id) {
+async function deleteImage(id) {
   let initialLength = galleryImages.length;
   galleryImages = galleryImages.filter((img) => img.id !== id);
-  let fs = __require("fs"), dataFilePath = __require("path").join(process.cwd(), "app/data/gallery.json");
-  try {
-    return fs.writeFileSync(
-      dataFilePath,
-      JSON.stringify({ images: galleryImages }, null, 2)
-    ), galleryImages.length !== initialLength;
-  } catch (error) {
-    return console.error("Failed to persist gallery changes:", error), !1;
-  }
-}
-try {
-  let existingData = require_gallery();
-  existingData && Array.isArray(existingData.images) && (galleryImages = existingData.images);
-} catch {
-  console.log("No existing gallery data found");
+  let wasDeleted = galleryImages.length !== initialLength;
+  return wasDeleted && await saveGalleryToS3(), wasDeleted;
 }
 
 // app/routes/admin.manage.tsx
 import { jsxDEV as jsxDEV4 } from "react/jsx-dev-runtime";
 var loader2 = async ({ request }) => {
   await requireAdminUser(request);
-  let images = getAllImages();
+  let images = await getAllImages();
   return json({ images });
 }, action = async ({ request }) => {
   await requireAdminUser(request);
-  let formData = await request.formData(), action6 = formData.get("_action");
-  if (action6 === "delete") {
+  let formData = await request.formData(), action7 = formData.get("_action");
+  if (action7 === "delete") {
     let imageId = formData.get("imageId");
-    return imageId ? deleteImage(imageId) ? json({ success: "Image deleted successfully" }) : json({ error: "Failed to delete image" }, { status: 400 }) : json({ error: "Image ID is required" }, { status: 400 });
+    return imageId ? await deleteImage(imageId) ? json({ success: "Image deleted successfully" }) : json({ error: "Failed to delete image" }, { status: 400 }) : json({ error: "Image ID is required" }, { status: 400 });
   }
-  if (action6 === "update") {
+  if (action7 === "update") {
     let imageId = formData.get("imageId"), category = formData.get("category"), alt = formData.get("alt");
     return !imageId || !category || !alt ? json(
       { error: "Image ID, category, and description are required" },
       { status: 400 }
-    ) : updateImage(imageId, { category, alt }) ? json({ success: "Image updated successfully" }) : json({ error: "Failed to update image" }, { status: 400 });
+    ) : await updateImage(imageId, { category, alt }) ? json({ success: "Image updated successfully" }) : json({ error: "Failed to update image" }, { status: 400 });
   }
   return json({ error: "Invalid action" }, { status: 400 });
 };
@@ -862,50 +890,10 @@ __export(admin_upload_exports, {
 });
 import { json as json2 } from "@remix-run/node";
 import { Form as Form2, useActionData as useActionData2, Link as Link2 } from "@remix-run/react";
-import { PutObjectCommand as PutObjectCommand2 } from "@aws-sdk/client-s3";
-
-// app/utils/s3.server.ts
-import { S3Client } from "@aws-sdk/client-s3";
-console.log("S3 Configuration Check:", {
-  hasRegion: !!process.env.MY_AWS_REGION,
-  hasAccessKey: !!process.env.MY_AWS_ACCESS_KEY_ID,
-  hasSecretKey: !!process.env.MY_AWS_SECRET_KEY,
-  hasBucketName: !!process.env.AWS_BUCKET_NAME,
-  region: process.env.MY_AWS_REGION,
-  bucketName: process.env.AWS_BUCKET_NAME
-});
-if (!process.env.MY_AWS_REGION)
-  throw new Error("MY_AWS_REGION is not configured");
-if (!process.env.MY_AWS_ACCESS_KEY_ID)
-  throw new Error("MY_AWS_ACCESS_KEY_ID is not configured");
-if (!process.env.MY_AWS_SECRET_KEY)
-  throw new Error("MY_AWS_SECRET_KEY is not configured");
-if (!process.env.AWS_BUCKET_NAME)
-  throw new Error("AWS_BUCKET_NAME is not configured");
-var s3Client = new S3Client({
-  region: process.env.MY_AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.MY_AWS_SECRET_KEY
-  }
-});
-s3Client.config.credentials().then(
-  (creds) => {
-    console.log("S3 client configured successfully");
-  },
-  (error) => {
-    console.error("S3 client configuration error:", error);
-  }
-);
-var AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME, AWS_REGION = process.env.MY_AWS_REGION;
-
-// app/routes/admin.upload.tsx
+import { PutObjectCommand as PutObjectCommand3 } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { jsxDEV as jsxDEV5 } from "react/jsx-dev-runtime";
-var loader3 = async ({ request }) => (await requireAdminUser(request), json2({})), sharp = null;
-typeof window > "u" && import("sharp").then((sharpModule) => {
-  sharp = sharpModule.default;
-});
-var action2 = async ({ request }) => {
+var loader3 = async ({ request }) => (await requireAdminUser(request), json2({})), action2 = async ({ request }) => {
   await requireAdminUser(request);
   let formData = await request.formData(), image = formData.get("image"), category = formData.get("category"), alt = formData.get("alt");
   if (console.log("Upload attempt:", {
@@ -931,7 +919,7 @@ var action2 = async ({ request }) => {
       filename,
       imageSize: processedImage.length
     }), await s3Client.send(
-      new PutObjectCommand2({
+      new PutObjectCommand3({
         Bucket: AWS_BUCKET_NAME,
         Key: filename,
         Body: processedImage,
@@ -940,7 +928,7 @@ var action2 = async ({ request }) => {
     );
     let imageUrl = `https://${AWS_BUCKET_NAME}.s3.${AWS_REGION}.amazonaws.com/${filename}`;
     console.log("Upload successful:", { imageUrl });
-    let savedImage = addImage({
+    let savedImage = await addImage({
       src: imageUrl,
       alt,
       category
@@ -963,12 +951,12 @@ function AdminUpload() {
     /* @__PURE__ */ jsxDEV5("div", { className: "text-center", children: [
       /* @__PURE__ */ jsxDEV5("h2", { className: "text-3xl font-extrabold text-white", children: "Upload Image" }, void 0, !1, {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 120,
+        lineNumber: 113,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV5("p", { className: "mt-2 text-sm text-gray-400", children: "Add new images to the gallery" }, void 0, !1, {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 121,
+        lineNumber: 114,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV5(
@@ -982,14 +970,14 @@ function AdminUpload() {
         !1,
         {
           fileName: "app/routes/admin.upload.tsx",
-          lineNumber: 124,
+          lineNumber: 117,
           columnNumber: 11
         },
         this
       )
     ] }, void 0, !0, {
       fileName: "app/routes/admin.upload.tsx",
-      lineNumber: 119,
+      lineNumber: 112,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV5(
@@ -1012,7 +1000,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 139,
+                  lineNumber: 132,
                   columnNumber: 15
                 },
                 this
@@ -1036,14 +1024,14 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 145,
+                  lineNumber: 138,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 138,
+              lineNumber: 131,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV5("div", { children: [
@@ -1058,7 +1046,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 161,
+                  lineNumber: 154,
                   columnNumber: 15
                 },
                 this
@@ -1073,32 +1061,32 @@ function AdminUpload() {
                   children: [
                     /* @__PURE__ */ jsxDEV5("option", { value: "", children: "Select a category" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 173,
+                      lineNumber: 166,
                       columnNumber: 17
                     }, this),
                     /* @__PURE__ */ jsxDEV5("option", { value: "Framing", children: "Framing" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 174,
+                      lineNumber: 167,
                       columnNumber: 17
                     }, this),
                     /* @__PURE__ */ jsxDEV5("option", { value: "Decking", children: "Decking" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 175,
+                      lineNumber: 168,
                       columnNumber: 17
                     }, this),
                     /* @__PURE__ */ jsxDEV5("option", { value: "New Construction", children: "New Construction" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 176,
+                      lineNumber: 169,
                       columnNumber: 17
                     }, this),
                     /* @__PURE__ */ jsxDEV5("option", { value: "Renovation", children: "Renovation" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 177,
+                      lineNumber: 170,
                       columnNumber: 17
                     }, this),
                     /* @__PURE__ */ jsxDEV5("option", { value: "Commercial", children: "Commercial" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 178,
+                      lineNumber: 171,
                       columnNumber: 17
                     }, this)
                   ]
@@ -1107,14 +1095,14 @@ function AdminUpload() {
                 !0,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 167,
+                  lineNumber: 160,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 160,
+              lineNumber: 153,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV5("div", { children: [
@@ -1129,7 +1117,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 183,
+                  lineNumber: 176,
                   columnNumber: 15
                 },
                 this
@@ -1148,29 +1136,29 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 189,
+                  lineNumber: 182,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 182,
+              lineNumber: 175,
               columnNumber: 13
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 137,
+            lineNumber: 130,
             columnNumber: 11
           }, this),
           actionData?.error && /* @__PURE__ */ jsxDEV5("div", { className: "text-red-500 text-sm", children: actionData.error }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 201,
+            lineNumber: 194,
             columnNumber: 13
           }, this),
           actionData?.success && /* @__PURE__ */ jsxDEV5("div", { className: "text-green-500 text-sm", children: "Image uploaded successfully!" }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 205,
+            lineNumber: 198,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV5("div", { children: /* @__PURE__ */ jsxDEV5(
@@ -1184,13 +1172,13 @@ function AdminUpload() {
             !1,
             {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 211,
+              lineNumber: 204,
               columnNumber: 13
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 210,
+            lineNumber: 203,
             columnNumber: 11
           }, this)
         ]
@@ -1199,18 +1187,18 @@ function AdminUpload() {
       !0,
       {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 132,
+        lineNumber: 125,
         columnNumber: 9
       },
       this
     )
   ] }, void 0, !0, {
     fileName: "app/routes/admin.upload.tsx",
-    lineNumber: 118,
+    lineNumber: 111,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/admin.upload.tsx",
-    lineNumber: 117,
+    lineNumber: 110,
     columnNumber: 5
   }, this);
 }
@@ -2435,52 +2423,120 @@ function Services() {
 // app/routes/contact.tsx
 var contact_exports = {};
 __export(contact_exports, {
+  action: () => action6,
   default: () => Contact,
   meta: () => meta2
 });
-import { Form as Form4 } from "@remix-run/react";
-import { useState as useState3 } from "react";
-import { jsxDEV as jsxDEV10 } from "react/jsx-dev-runtime";
+import { json as json6 } from "@remix-run/node";
+import { useFetcher as useFetcher2 } from "@remix-run/react";
+import { useState as useState3, useEffect as useEffect2 } from "react";
+import { Resend as Resend2 } from "resend";
+import { Fragment as Fragment2, jsxDEV as jsxDEV10 } from "react/jsx-dev-runtime";
 var meta2 = () => [
   { title: "Contact Us - Grit Construction" },
   {
     name: "description",
     content: "Get in touch with Grit Construction for your construction needs."
   }
-];
+], action6 = async ({ request }) => {
+  let resend = new Resend2(process.env.RESEND_API_KEY), formData = await request.formData(), name = formData.get("name"), email = formData.get("email"), phone = formData.get("phone"), message = formData.get("message");
+  if (!name || !email || !phone || !message || typeof name != "string" || typeof email != "string" || typeof phone != "string" || typeof message != "string")
+    return json6(
+      { success: !1, error: "All fields are required and must be valid." },
+      { status: 400 }
+    );
+  try {
+    let { data: resendData, error } = await resend.emails.send({
+      from: "Grit Construction <onboarding@resend.dev>",
+      to: ["stoney.harward@gmail.com"],
+      subject: `New Contact Form Message from ${name.charAt(0).toUpperCase() + name.slice(1)}`,
+      html: `
+        <h2>New Contact Form Message</h2>
+        <p><strong>Name:</strong> ${name.charAt(0).toUpperCase() + name.slice(1)}</p>
+        <p><strong>Email:</strong> ${email.toLowerCase()}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    });
+    return error ? json6(
+      {
+        success: !1,
+        error: `Failed to send email: ${error.message}`
+      },
+      { status: 500 }
+    ) : json6(
+      {
+        success: !0,
+        message: "Message sent successfully!"
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return json6(
+      {
+        success: !1,
+        error: error instanceof Error ? error.message : "Failed to send message. Please try again."
+      },
+      { status: 500 }
+    );
+  }
+};
 function Contact() {
-  let [formData, setFormData] = useState3({
+  let fetcher = useFetcher2(), [showSuccess, setShowSuccess] = useState3(!1), [formData, setFormData] = useState3({
     name: "",
     email: "",
     phone: "",
     message: ""
-  }), handleSubmit = async (event) => {
-    event.preventDefault(), console.log("Form submitted:", formData);
-  }, handleChange = (e) => {
+  });
+  useEffect2(() => {
+    if (fetcher.data?.success) {
+      setShowSuccess(!0), setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: ""
+      }), window.scrollTo({ top: 0, behavior: "smooth" });
+      let timer = setTimeout(() => {
+        setShowSuccess(!1);
+      }, 3e3);
+      return () => clearTimeout(timer);
+    }
+  }, [fetcher.data]);
+  let handleChange = (e) => {
     let { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
+  }, handleSubmit = (e) => {
+    e.preventDefault();
+    let formDataToSubmit = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      formDataToSubmit.append(key, value);
+    }), fetcher.submit(formDataToSubmit, {
+      method: "post",
+      action: "/contact"
+    });
   };
   return /* @__PURE__ */ jsxDEV10("div", { className: "bg-white", children: /* @__PURE__ */ jsxDEV10("div", { className: "max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV10("div", { className: "max-w-lg mx-auto md:max-w-none md:grid md:grid-cols-2 md:gap-8", children: [
     /* @__PURE__ */ jsxDEV10("div", { children: [
       /* @__PURE__ */ jsxDEV10("h2", { className: "text-2xl font-extrabold text-gray-900 sm:text-3xl", children: "Contact Information" }, void 0, !1, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 45,
+        lineNumber: 165,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ jsxDEV10("div", { className: "mt-3", children: [
         /* @__PURE__ */ jsxDEV10("p", { className: "text-lg text-gray-700", children: "Get in touch with us for any questions about our services or to discuss your project." }, void 0, !1, {
           fileName: "app/routes/contact.tsx",
-          lineNumber: 49,
+          lineNumber: 169,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV10("dl", { className: "mt-8 text-base text-gray-700", children: [
           /* @__PURE__ */ jsxDEV10("div", { children: [
             /* @__PURE__ */ jsxDEV10("dt", { className: "sr-only", children: "Phone number" }, void 0, !1, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 55,
+              lineNumber: 175,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV10("dd", { className: "flex", children: [
@@ -2503,7 +2559,7 @@ function Contact() {
                     !1,
                     {
                       fileName: "app/routes/contact.tsx",
-                      lineNumber: 63,
+                      lineNumber: 183,
                       columnNumber: 23
                     },
                     this
@@ -2513,30 +2569,30 @@ function Contact() {
                 !1,
                 {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 57,
+                  lineNumber: 177,
                   columnNumber: 21
                 },
                 this
               ),
               /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "+1 (555) 123-4567" }, void 0, !1, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 70,
+                lineNumber: 190,
                 columnNumber: 21
               }, this)
             ] }, void 0, !0, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 56,
+              lineNumber: 176,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/contact.tsx",
-            lineNumber: 54,
+            lineNumber: 174,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV10("div", { className: "mt-6", children: [
             /* @__PURE__ */ jsxDEV10("dt", { className: "sr-only", children: "Email" }, void 0, !1, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 74,
+              lineNumber: 194,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV10("dd", { className: "flex", children: [
@@ -2559,7 +2615,7 @@ function Contact() {
                     !1,
                     {
                       fileName: "app/routes/contact.tsx",
-                      lineNumber: 82,
+                      lineNumber: 202,
                       columnNumber: 23
                     },
                     this
@@ -2569,30 +2625,30 @@ function Contact() {
                 !1,
                 {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 76,
+                  lineNumber: 196,
                   columnNumber: 21
                 },
                 this
               ),
               /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "contact@gritconstruction.com" }, void 0, !1, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 89,
+                lineNumber: 209,
                 columnNumber: 21
               }, this)
             ] }, void 0, !0, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 75,
+              lineNumber: 195,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/contact.tsx",
-            lineNumber: 73,
+            lineNumber: 193,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV10("div", { className: "mt-6", children: [
             /* @__PURE__ */ jsxDEV10("dt", { className: "sr-only", children: "Address" }, void 0, !1, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 93,
+              lineNumber: 213,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV10("dd", { className: "flex", children: [
@@ -2616,7 +2672,7 @@ function Contact() {
                       !1,
                       {
                         fileName: "app/routes/contact.tsx",
-                        lineNumber: 101,
+                        lineNumber: 221,
                         columnNumber: 23
                       },
                       this
@@ -2633,7 +2689,7 @@ function Contact() {
                       !1,
                       {
                         fileName: "app/routes/contact.tsx",
-                        lineNumber: 107,
+                        lineNumber: 227,
                         columnNumber: 23
                       },
                       this
@@ -2644,7 +2700,7 @@ function Contact() {
                 !0,
                 {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 95,
+                  lineNumber: 215,
                   columnNumber: 21
                 },
                 this
@@ -2653,288 +2709,361 @@ function Contact() {
                 "123 Construction Ave",
                 /* @__PURE__ */ jsxDEV10("br", {}, void 0, !1, {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 116,
+                  lineNumber: 236,
                   columnNumber: 23
                 }, this),
                 "Building City, ST 12345"
               ] }, void 0, !0, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 114,
+                lineNumber: 234,
                 columnNumber: 21
               }, this)
             ] }, void 0, !0, {
               fileName: "app/routes/contact.tsx",
-              lineNumber: 94,
+              lineNumber: 214,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/contact.tsx",
-            lineNumber: 92,
+            lineNumber: 212,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/contact.tsx",
-          lineNumber: 53,
+          lineNumber: 173,
           columnNumber: 15
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 48,
+        lineNumber: 168,
         columnNumber: 13
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/contact.tsx",
-      lineNumber: 44,
+      lineNumber: 164,
       columnNumber: 11
     }, this),
     /* @__PURE__ */ jsxDEV10("div", { className: "mt-12 sm:mt-16 md:mt-0", children: [
       /* @__PURE__ */ jsxDEV10("h2", { className: "text-2xl font-extrabold text-gray-900 sm:text-3xl", children: "Send us a message" }, void 0, !1, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 125,
+        lineNumber: 245,
         columnNumber: 13
       }, this),
-      /* @__PURE__ */ jsxDEV10("div", { className: "mt-3", children: /* @__PURE__ */ jsxDEV10(
-        Form4,
-        {
-          method: "post",
-          onSubmit: handleSubmit,
-          className: "grid grid-cols-1 gap-y-6",
-          children: [
-            /* @__PURE__ */ jsxDEV10("div", { children: [
-              /* @__PURE__ */ jsxDEV10(
-                "label",
-                {
-                  htmlFor: "name",
-                  className: "block text-sm font-medium text-gray-700",
-                  children: "Name"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 135,
-                  columnNumber: 19
-                },
-                this
-              ),
-              /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
-                "input",
-                {
-                  type: "text",
-                  name: "name",
-                  id: "name",
-                  required: !0,
-                  value: formData.name,
-                  onChange: handleChange,
-                  className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 142,
-                  columnNumber: 21
-                },
-                this
-              ) }, void 0, !1, {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 141,
-                columnNumber: 19
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 134,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV10("div", { children: [
-              /* @__PURE__ */ jsxDEV10(
-                "label",
-                {
-                  htmlFor: "email",
-                  className: "block text-sm font-medium text-gray-700",
-                  children: "Email"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 155,
-                  columnNumber: 19
-                },
-                this
-              ),
-              /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
-                "input",
-                {
-                  type: "email",
-                  name: "email",
-                  id: "email",
-                  required: !0,
-                  value: formData.email,
-                  onChange: handleChange,
-                  className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 162,
-                  columnNumber: 21
-                },
-                this
-              ) }, void 0, !1, {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 161,
-                columnNumber: 19
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 154,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV10("div", { children: [
-              /* @__PURE__ */ jsxDEV10(
-                "label",
-                {
-                  htmlFor: "phone",
-                  className: "block text-sm font-medium text-gray-700",
-                  children: "Phone"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 175,
-                  columnNumber: 19
-                },
-                this
-              ),
-              /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
-                "input",
-                {
-                  type: "tel",
-                  name: "phone",
-                  id: "phone",
-                  required: !0,
-                  value: formData.phone,
-                  onChange: handleChange,
-                  className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 182,
-                  columnNumber: 21
-                },
-                this
-              ) }, void 0, !1, {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 181,
-                columnNumber: 19
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 174,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV10("div", { children: [
-              /* @__PURE__ */ jsxDEV10(
-                "label",
-                {
-                  htmlFor: "message",
-                  className: "block text-sm font-medium text-gray-700",
-                  children: "Message"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 195,
-                  columnNumber: 19
-                },
-                this
-              ),
-              /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
-                "textarea",
-                {
-                  name: "message",
-                  id: "message",
-                  rows: 4,
-                  required: !0,
-                  value: formData.message,
-                  onChange: handleChange,
-                  className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
-                },
-                void 0,
-                !1,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 202,
-                  columnNumber: 21
-                },
-                this
-              ) }, void 0, !1, {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 201,
-                columnNumber: 19
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 194,
-              columnNumber: 17
-            }, this),
-            /* @__PURE__ */ jsxDEV10("div", { children: /* @__PURE__ */ jsxDEV10(
-              "button",
-              {
-                type: "submit",
-                className: "w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
-                children: "Send Message"
-              },
-              void 0,
-              !1,
-              {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 215,
-                columnNumber: 19
-              },
-              this
-            ) }, void 0, !1, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 214,
-              columnNumber: 17
-            }, this)
-          ]
-        },
-        void 0,
-        !0,
-        {
+      /* @__PURE__ */ jsxDEV10("div", { className: "mt-3", children: [
+        fetcher.data?.error && /* @__PURE__ */ jsxDEV10("div", { className: "mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
           fileName: "app/routes/contact.tsx",
-          lineNumber: 129,
-          columnNumber: 15
-        },
-        this
-      ) }, void 0, !1, {
+          lineNumber: 250,
+          columnNumber: 17
+        }, this),
+        showSuccess && /* @__PURE__ */ jsxDEV10("div", { className: "mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded", children: fetcher.data?.message }, void 0, !1, {
+          fileName: "app/routes/contact.tsx",
+          lineNumber: 256,
+          columnNumber: 17
+        }, this),
+        /* @__PURE__ */ jsxDEV10(
+          fetcher.Form,
+          {
+            method: "post",
+            onSubmit: handleSubmit,
+            className: "grid grid-cols-1 gap-y-6",
+            children: [
+              /* @__PURE__ */ jsxDEV10("div", { children: [
+                /* @__PURE__ */ jsxDEV10(
+                  "label",
+                  {
+                    htmlFor: "name",
+                    className: "block text-sm font-medium text-gray-700",
+                    children: "Name"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 267,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
+                  "input",
+                  {
+                    type: "text",
+                    name: "name",
+                    id: "name",
+                    required: !0,
+                    value: formData.name,
+                    onChange: handleChange,
+                    className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 274,
+                    columnNumber: 21
+                  },
+                  this
+                ) }, void 0, !1, {
+                  fileName: "app/routes/contact.tsx",
+                  lineNumber: 273,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, !0, {
+                fileName: "app/routes/contact.tsx",
+                lineNumber: 266,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV10("div", { children: [
+                /* @__PURE__ */ jsxDEV10(
+                  "label",
+                  {
+                    htmlFor: "email",
+                    className: "block text-sm font-medium text-gray-700",
+                    children: "Email"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 287,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
+                  "input",
+                  {
+                    type: "email",
+                    name: "email",
+                    id: "email",
+                    required: !0,
+                    value: formData.email,
+                    onChange: handleChange,
+                    className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 294,
+                    columnNumber: 21
+                  },
+                  this
+                ) }, void 0, !1, {
+                  fileName: "app/routes/contact.tsx",
+                  lineNumber: 293,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, !0, {
+                fileName: "app/routes/contact.tsx",
+                lineNumber: 286,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV10("div", { children: [
+                /* @__PURE__ */ jsxDEV10(
+                  "label",
+                  {
+                    htmlFor: "phone",
+                    className: "block text-sm font-medium text-gray-700",
+                    children: "Phone"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 307,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
+                  "input",
+                  {
+                    type: "tel",
+                    name: "phone",
+                    id: "phone",
+                    required: !0,
+                    value: formData.phone,
+                    onChange: handleChange,
+                    className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 314,
+                    columnNumber: 21
+                  },
+                  this
+                ) }, void 0, !1, {
+                  fileName: "app/routes/contact.tsx",
+                  lineNumber: 313,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, !0, {
+                fileName: "app/routes/contact.tsx",
+                lineNumber: 306,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV10("div", { children: [
+                /* @__PURE__ */ jsxDEV10(
+                  "label",
+                  {
+                    htmlFor: "message",
+                    className: "block text-sm font-medium text-gray-700",
+                    children: "Message"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 327,
+                    columnNumber: 19
+                  },
+                  this
+                ),
+                /* @__PURE__ */ jsxDEV10("div", { className: "mt-1", children: /* @__PURE__ */ jsxDEV10(
+                  "textarea",
+                  {
+                    name: "message",
+                    id: "message",
+                    rows: 4,
+                    required: !0,
+                    value: formData.message,
+                    onChange: handleChange,
+                    className: "py-3 px-4 block w-full shadow-sm focus:ring-2 focus:ring-blue-500 border-2 border-gray-400 rounded-md outline-none"
+                  },
+                  void 0,
+                  !1,
+                  {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 334,
+                    columnNumber: 21
+                  },
+                  this
+                ) }, void 0, !1, {
+                  fileName: "app/routes/contact.tsx",
+                  lineNumber: 333,
+                  columnNumber: 19
+                }, this)
+              ] }, void 0, !0, {
+                fileName: "app/routes/contact.tsx",
+                lineNumber: 326,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV10("div", { children: /* @__PURE__ */ jsxDEV10(
+                "button",
+                {
+                  type: "submit",
+                  disabled: fetcher.state === "submitting",
+                  className: "w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed",
+                  children: fetcher.state === "submitting" ? /* @__PURE__ */ jsxDEV10(Fragment2, { children: [
+                    /* @__PURE__ */ jsxDEV10(
+                      "svg",
+                      {
+                        className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white",
+                        xmlns: "http://www.w3.org/2000/svg",
+                        fill: "none",
+                        viewBox: "0 0 24 24",
+                        children: [
+                          /* @__PURE__ */ jsxDEV10(
+                            "circle",
+                            {
+                              className: "opacity-25",
+                              cx: "12",
+                              cy: "12",
+                              r: "10",
+                              stroke: "currentColor",
+                              strokeWidth: "4"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/contact.tsx",
+                              lineNumber: 360,
+                              columnNumber: 27
+                            },
+                            this
+                          ),
+                          /* @__PURE__ */ jsxDEV10(
+                            "path",
+                            {
+                              className: "opacity-75",
+                              fill: "currentColor",
+                              d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/contact.tsx",
+                              lineNumber: 368,
+                              columnNumber: 27
+                            },
+                            this
+                          )
+                        ]
+                      },
+                      void 0,
+                      !0,
+                      {
+                        fileName: "app/routes/contact.tsx",
+                        lineNumber: 354,
+                        columnNumber: 25
+                      },
+                      this
+                    ),
+                    "Sending..."
+                  ] }, void 0, !0, {
+                    fileName: "app/routes/contact.tsx",
+                    lineNumber: 353,
+                    columnNumber: 23
+                  }, this) : "Send Message"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/contact.tsx",
+                  lineNumber: 347,
+                  columnNumber: 19
+                },
+                this
+              ) }, void 0, !1, {
+                fileName: "app/routes/contact.tsx",
+                lineNumber: 346,
+                columnNumber: 17
+              }, this)
+            ]
+          },
+          void 0,
+          !0,
+          {
+            fileName: "app/routes/contact.tsx",
+            lineNumber: 261,
+            columnNumber: 15
+          },
+          this
+        )
+      ] }, void 0, !0, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 128,
+        lineNumber: 248,
         columnNumber: 13
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/contact.tsx",
-      lineNumber: 124,
+      lineNumber: 244,
       columnNumber: 11
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/contact.tsx",
-    lineNumber: 43,
+    lineNumber: 163,
     columnNumber: 9
   }, this) }, void 0, !1, {
     fileName: "app/routes/contact.tsx",
-    lineNumber: 42,
+    lineNumber: 162,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/contact.tsx",
-    lineNumber: 41,
+    lineNumber: 161,
     columnNumber: 5
   }, this);
 }
@@ -2946,12 +3075,12 @@ __export(gallery_exports, {
   loader: () => loader6
 });
 import React5 from "react";
-import { json as json6 } from "@remix-run/node";
+import { json as json7 } from "@remix-run/node";
 import { useLoaderData as useLoaderData2 } from "@remix-run/react";
 import { jsxDEV as jsxDEV11 } from "react/jsx-dev-runtime";
 var loader6 = async () => {
-  let images = getAllImages();
-  return json6({ images });
+  let images = await getAllImages();
+  return json7({ images });
 };
 function Gallery() {
   let { images } = useLoaderData2(), [selectedCategory, setSelectedCategory] = React5.useState("all"), categories = ["all", ...new Set(images.map((img) => img.category))], filteredImages = selectedCategory === "all" ? images : images.filter((img) => img.category === selectedCategory);
@@ -3362,7 +3491,7 @@ function Index() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-RT5UVSDV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-S7745XDI.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-CFLGZQ75.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-SM6CJU2Q.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-VHCICRTF.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-MCXZYEQ3.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-ADS64OSM.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-N34UJXX5.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-4X364NUA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "96988760", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1741819464724 }, url: "/build/manifest-96988760.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-RT5UVSDV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-S7745XDI.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-CFLGZQ75.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-5EIWMCY7.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-2MHTU2ZC.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-EQR2TLMC.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-V6ZZAOOY.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-JVZWW3C5.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-4X364NUA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "e872a939", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1741906558632 }, url: "/build/manifest-E872A939.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

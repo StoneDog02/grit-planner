@@ -6,6 +6,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client, AWS_BUCKET_NAME, AWS_REGION } from "../utils/s3.server";
 import { addImage } from "../models/gallery.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import sharp from "sharp";
 
 interface ActionData {
   error?: string;
@@ -18,14 +19,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   await requireAdminUser(request);
   return json({});
 };
-
-// Import sharp only on the server side
-let sharp: typeof import("sharp") | null = null;
-if (typeof window === "undefined") {
-  import("sharp").then((sharpModule) => {
-    sharp = sharpModule.default;
-  });
-}
 
 export const action: ActionFunction = async ({ request }) => {
   await requireAdminUser(request);
