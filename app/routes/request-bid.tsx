@@ -10,6 +10,7 @@ interface BidRequestForm {
   email: string;
   phone: string;
   contactPreference: string;
+  scope: string;
   projectType: string;
   projectDescription: string;
   timeline: string;
@@ -35,6 +36,7 @@ export const action: ActionFunction = async ({ request }) => {
   const email = formData.get("email");
   const phone = formData.get("phone");
   const contactPreference = formData.get("contactPreference");
+  const scope = formData.get("scope");
   const projectType = formData.get("projectType");
   const projectDescription = formData.get("projectDescription");
   const timeline = formData.get("timeline");
@@ -45,6 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
     !email ||
     !phone ||
     !contactPreference ||
+    !scope ||
     !projectType ||
     !projectDescription ||
     !timeline ||
@@ -52,6 +55,7 @@ export const action: ActionFunction = async ({ request }) => {
     typeof email !== "string" ||
     typeof phone !== "string" ||
     typeof contactPreference !== "string" ||
+    typeof scope !== "string" ||
     typeof projectType !== "string" ||
     typeof projectDescription !== "string" ||
     typeof timeline !== "string"
@@ -67,6 +71,7 @@ export const action: ActionFunction = async ({ request }) => {
     email,
     phone,
     contactPreference: contactPreference as string,
+    scope,
     projectType,
     projectDescription,
     timeline,
@@ -75,7 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     const { data: resendData, error } = await resend.emails.send({
       from: "Grit Construction <onboarding@resend.dev>",
-      to: ["stoney.harward@gmail.com"],
+      to: ["gritconstruction2023@gmail.com"],
       subject: `New Bid Request from ${
         data.name.charAt(0).toUpperCase() + data.name.slice(1)
       }`,
@@ -89,6 +94,9 @@ export const action: ActionFunction = async ({ request }) => {
         <p><strong>Preferred Contact Method:</strong> ${
           data.contactPreference.charAt(0).toUpperCase() +
           data.contactPreference.slice(1)
+        }</p>
+        <p><strong>Project Scope:</strong> ${
+          data.scope.charAt(0).toUpperCase() + data.scope.slice(1)
         }</p>
         <p><strong>Project Type:</strong> ${
           data.projectType.charAt(0).toUpperCase() + data.projectType.slice(1)
@@ -142,6 +150,7 @@ export default function RequestBid() {
     email: "",
     phone: "",
     contactPreference: "email",
+    scope: "",
     projectType: "",
     projectDescription: "",
     timeline: "",
@@ -158,6 +167,7 @@ export default function RequestBid() {
         email: "",
         phone: "",
         contactPreference: "email",
+        scope: "",
         projectType: "",
         projectDescription: "",
         timeline: "",
@@ -359,10 +369,31 @@ export default function RequestBid() {
 
               <div>
                 <label
-                  htmlFor="projectType"
+                  htmlFor="scope"
                   className="block text-sm font-medium text-white"
                 >
                   Project Type
+                </label>
+                <select
+                  name="scope"
+                  id="scope"
+                  required
+                  value={formData.scope}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                >
+                  <option value="">Select project type</option>
+                  <option value="residential">Residential</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="projectType"
+                  className="block text-sm font-medium text-white"
+                >
+                  Project Scope
                 </label>
                 <select
                   name="projectType"
@@ -372,11 +403,19 @@ export default function RequestBid() {
                   onChange={handleChange}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 >
-                  <option value="">Select a project type</option>
-                  <option value="residential">Residential</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="renovation">Renovation</option>
-                  <option value="new-construction">New Construction</option>
+                  <option value="">Select project scope</option>
+                  <option value="general-contracting">
+                    General Contracting
+                  </option>
+                  <option value="framing">Framing</option>
+                  <option value="concrete">Concrete</option>
+                  <option value="door-window-installation">
+                    Door & Window Installation
+                  </option>
+                  <option value="finish-carpentry-trim">
+                    Finish Carpentry & Trim
+                  </option>
+                  <option value="drywall">Drywall</option>
                 </select>
               </div>
 

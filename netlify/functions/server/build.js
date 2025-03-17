@@ -211,22 +211,26 @@ function Layout({ children }) {
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV2("div", { className: "flex-1 flex items-center justify-center md:justify-start", children: [
-          /* @__PURE__ */ jsxDEV2(
-            Link,
+          /* @__PURE__ */ jsxDEV2(Link, { to: "/", className: "py-3 px-6", children: /* @__PURE__ */ jsxDEV2(
+            "img",
             {
-              to: "/",
-              className: "text-2xl font-bold text-gray-900 py-3 px-6",
-              children: "GRIT"
+              src: "/images/Grit_construction_logo-removebg-preview.png",
+              alt: "Grit Construction",
+              className: "h-12 w-auto"
             },
             void 0,
             !1,
             {
               fileName: "app/components/Layout.tsx",
-              lineNumber: 51,
-              columnNumber: 15
+              lineNumber: 52,
+              columnNumber: 17
             },
             this
-          ),
+          ) }, void 0, !1, {
+            fileName: "app/components/Layout.tsx",
+            lineNumber: 51,
+            columnNumber: 15
+          }, this),
           /* @__PURE__ */ jsxDEV2("div", { className: "hidden md:flex md:ml-16", children: navigation.map((item) => {
             let isActive = item.href === "/" && location.pathname === "/" || item.href !== "/" && location.pathname.startsWith(item.href);
             return /* @__PURE__ */ jsxDEV2(
@@ -240,14 +244,14 @@ function Layout({ children }) {
               !1,
               {
                 fileName: "app/components/Layout.tsx",
-                lineNumber: 67,
+                lineNumber: 68,
                 columnNumber: 21
               },
               this
             );
           }) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 59,
+            lineNumber: 60,
             columnNumber: 15
           }, this)
         ] }, void 0, !0, {
@@ -257,11 +261,11 @@ function Layout({ children }) {
         }, this),
         /* @__PURE__ */ jsxDEV2("div", { className: "flex-1 flex justify-end md:hidden", children: /* @__PURE__ */ jsxDEV2("div", { className: "w-10" }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 85,
+          lineNumber: 86,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 84,
+          lineNumber: 85,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
@@ -287,14 +291,14 @@ function Layout({ children }) {
               !1,
               {
                 fileName: "app/components/Layout.tsx",
-                lineNumber: 103,
+                lineNumber: 104,
                 columnNumber: 19
               },
               this
             );
           }) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 95,
+            lineNumber: 96,
             columnNumber: 13
           }, this)
         },
@@ -302,7 +306,7 @@ function Layout({ children }) {
         !1,
         {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 90,
+          lineNumber: 91,
           columnNumber: 11
         },
         this
@@ -318,7 +322,7 @@ function Layout({ children }) {
     }, this),
     /* @__PURE__ */ jsxDEV2("main", { children }, void 0, !1, {
       fileName: "app/components/Layout.tsx",
-      lineNumber: 122,
+      lineNumber: 123,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
@@ -446,6 +450,21 @@ var storage = createCookieSessionStorage({
     domain: void 0
   }
 });
+async function createUserSession({
+  username,
+  redirectTo
+}) {
+  let session = await storage.getSession();
+  return session.set("username", username), console.log("Creating session:", {
+    username,
+    redirectTo,
+    hasSession: !!session
+  }), redirect(redirectTo, {
+    headers: {
+      "Set-Cookie": await storage.commitSession(session)
+    }
+  });
+}
 async function getUserSession(request) {
   let cookie = request.headers.get("Cookie");
   return console.log("Getting user session:", {
@@ -580,41 +599,48 @@ var loader2 = async ({ request }) => {
     return imageId ? await deleteImage(imageId) ? json({ success: "Image deleted successfully" }) : json({ error: "Failed to delete image" }, { status: 400 }) : json({ error: "Image ID is required" }, { status: 400 });
   }
   if (action7 === "update") {
-    let imageId = formData.get("imageId"), category = formData.get("category"), alt = formData.get("alt");
-    return !imageId || !category || !alt ? json(
-      { error: "Image ID, category, and description are required" },
+    let imageId = formData.get("imageId"), category = formData.get("category"), service = formData.get("service"), alt = formData.get("alt");
+    return !imageId || !category || !service || !alt ? json(
+      { error: "Image ID, category, service, and description are required" },
       { status: 400 }
-    ) : await updateImage(imageId, { category, alt }) ? json({ success: "Image updated successfully" }) : json({ error: "Failed to update image" }, { status: 400 });
+    ) : await updateImage(imageId, { category, service, alt }) ? json({ success: "Image updated successfully" }) : json({ error: "Failed to update image" }, { status: 400 });
   }
   return json({ error: "Invalid action" }, { status: 400 });
 };
 function ManageGallery() {
-  let { images } = useLoaderData(), actionData = useActionData(), [editingId, setEditingId] = React2.useState(null);
+  let { images } = useLoaderData(), actionData = useActionData(), [editingId, setEditingId] = React2.useState(null), services2 = [
+    "general-contracting",
+    "framing",
+    "concrete",
+    "door-window-installation",
+    "finish-carpentry-trim",
+    "drywall"
+  ];
   return /* @__PURE__ */ jsxDEV4("div", { className: "min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV4("div", { className: "max-w-7xl mx-auto", children: [
     /* @__PURE__ */ jsxDEV4("div", { className: "text-center mb-8", children: [
       /* @__PURE__ */ jsxDEV4("h2", { className: "text-3xl font-extrabold text-white", children: "Manage Gallery" }, void 0, !1, {
         fileName: "app/routes/admin.manage.tsx",
-        lineNumber: 76,
+        lineNumber: 87,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV4("p", { className: "mt-2 text-sm text-gray-400", children: "Edit or delete images from the gallery" }, void 0, !1, {
         fileName: "app/routes/admin.manage.tsx",
-        lineNumber: 77,
+        lineNumber: 88,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.manage.tsx",
-      lineNumber: 75,
+      lineNumber: 86,
       columnNumber: 9
     }, this),
     actionData?.error && /* @__PURE__ */ jsxDEV4("div", { className: "mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: actionData.error }, void 0, !1, {
       fileName: "app/routes/admin.manage.tsx",
-      lineNumber: 83,
+      lineNumber: 94,
       columnNumber: 11
     }, this),
     actionData?.success && /* @__PURE__ */ jsxDEV4("div", { className: "mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded", children: actionData.success }, void 0, !1, {
       fileName: "app/routes/admin.manage.tsx",
-      lineNumber: 89,
+      lineNumber: 100,
       columnNumber: 11
     }, this),
     /* @__PURE__ */ jsxDEV4("div", { className: "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3", children: images.map((image) => /* @__PURE__ */ jsxDEV4(
@@ -633,30 +659,65 @@ function ManageGallery() {
             !1,
             {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 101,
+              lineNumber: 112,
               columnNumber: 17
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/admin.manage.tsx",
-            lineNumber: 100,
+            lineNumber: 111,
             columnNumber: 15
           }, this),
           editingId === image.id ? /* @__PURE__ */ jsxDEV4(Form, { method: "post", className: "p-4", children: [
             /* @__PURE__ */ jsxDEV4("input", { type: "hidden", name: "imageId", value: image.id }, void 0, !1, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 110,
+              lineNumber: 121,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV4("input", { type: "hidden", name: "_action", value: "update" }, void 0, !1, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 111,
+              lineNumber: 122,
+              columnNumber: 19
+            }, this),
+            /* @__PURE__ */ jsxDEV4("div", { className: "mb-3", children: [
+              /* @__PURE__ */ jsxDEV4("label", { className: "block text-sm font-medium text-gray-300", children: "Service" }, void 0, !1, {
+                fileName: "app/routes/admin.manage.tsx",
+                lineNumber: 125,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV4(
+                "select",
+                {
+                  name: "service",
+                  defaultValue: image.service,
+                  className: "mt-1 block w-full rounded-md border-gray-600 bg-gray-800 text-white",
+                  required: !0,
+                  children: services2.map((service) => /* @__PURE__ */ jsxDEV4("option", { value: service, children: service.split("-").map(
+                    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                  ).join(" ") }, service, !1, {
+                    fileName: "app/routes/admin.manage.tsx",
+                    lineNumber: 135,
+                    columnNumber: 25
+                  }, this))
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/admin.manage.tsx",
+                  lineNumber: 128,
+                  columnNumber: 21
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/admin.manage.tsx",
+              lineNumber: 124,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV4("div", { className: "mb-3", children: [
               /* @__PURE__ */ jsxDEV4("label", { className: "block text-sm font-medium text-gray-300", children: "Category" }, void 0, !1, {
                 fileName: "app/routes/admin.manage.tsx",
-                lineNumber: 114,
+                lineNumber: 149,
                 columnNumber: 21
               }, this),
               /* @__PURE__ */ jsxDEV4(
@@ -667,29 +728,14 @@ function ManageGallery() {
                   className: "mt-1 block w-full rounded-md border-gray-600 bg-gray-800 text-white",
                   required: !0,
                   children: [
-                    /* @__PURE__ */ jsxDEV4("option", { value: "Framing", children: "Framing" }, void 0, !1, {
+                    /* @__PURE__ */ jsxDEV4("option", { value: "residential", children: "Residential" }, void 0, !1, {
                       fileName: "app/routes/admin.manage.tsx",
-                      lineNumber: 123,
+                      lineNumber: 158,
                       columnNumber: 23
                     }, this),
-                    /* @__PURE__ */ jsxDEV4("option", { value: "Decking", children: "Decking" }, void 0, !1, {
+                    /* @__PURE__ */ jsxDEV4("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
                       fileName: "app/routes/admin.manage.tsx",
-                      lineNumber: 124,
-                      columnNumber: 23
-                    }, this),
-                    /* @__PURE__ */ jsxDEV4("option", { value: "New Construction", children: "New Construction" }, void 0, !1, {
-                      fileName: "app/routes/admin.manage.tsx",
-                      lineNumber: 125,
-                      columnNumber: 23
-                    }, this),
-                    /* @__PURE__ */ jsxDEV4("option", { value: "Renovation", children: "Renovation" }, void 0, !1, {
-                      fileName: "app/routes/admin.manage.tsx",
-                      lineNumber: 126,
-                      columnNumber: 23
-                    }, this),
-                    /* @__PURE__ */ jsxDEV4("option", { value: "Commercial", children: "Commercial" }, void 0, !1, {
-                      fileName: "app/routes/admin.manage.tsx",
-                      lineNumber: 127,
+                      lineNumber: 159,
                       columnNumber: 23
                     }, this)
                   ]
@@ -698,20 +744,20 @@ function ManageGallery() {
                 !0,
                 {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 117,
+                  lineNumber: 152,
                   columnNumber: 21
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 113,
+              lineNumber: 148,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV4("div", { className: "mb-3", children: [
               /* @__PURE__ */ jsxDEV4("label", { className: "block text-sm font-medium text-gray-300", children: "Description" }, void 0, !1, {
                 fileName: "app/routes/admin.manage.tsx",
-                lineNumber: 132,
+                lineNumber: 164,
                 columnNumber: 21
               }, this),
               /* @__PURE__ */ jsxDEV4(
@@ -727,14 +773,14 @@ function ManageGallery() {
                 !1,
                 {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 135,
+                  lineNumber: 167,
                   columnNumber: 21
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 131,
+              lineNumber: 163,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV4("div", { className: "flex justify-end space-x-2", children: [
@@ -750,7 +796,7 @@ function ManageGallery() {
                 !1,
                 {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 145,
+                  lineNumber: 177,
                   columnNumber: 21
                 },
                 this
@@ -766,29 +812,47 @@ function ManageGallery() {
                 !1,
                 {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 152,
+                  lineNumber: 184,
                   columnNumber: 21
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 144,
+              lineNumber: 176,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.manage.tsx",
-            lineNumber: 109,
+            lineNumber: 120,
             columnNumber: 17
           }, this) : /* @__PURE__ */ jsxDEV4("div", { className: "p-4", children: [
             /* @__PURE__ */ jsxDEV4("p", { className: "text-white text-sm mb-1", children: image.alt }, void 0, !1, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 162,
+              lineNumber: 194,
               columnNumber: 19
             }, this),
-            /* @__PURE__ */ jsxDEV4("p", { className: "text-red-500 text-xs mb-3", children: image.category }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV4("div", { className: "flex gap-2 mb-3", children: [
+              /* @__PURE__ */ jsxDEV4("span", { className: "text-red-500 text-xs", children: image.service.split("-").map(
+                (word) => word.charAt(0).toUpperCase() + word.slice(1)
+              ).join(" ") }, void 0, !1, {
+                fileName: "app/routes/admin.manage.tsx",
+                lineNumber: 196,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV4("span", { className: "text-gray-400 text-xs", children: "\u2022" }, void 0, !1, {
+                fileName: "app/routes/admin.manage.tsx",
+                lineNumber: 204,
+                columnNumber: 21
+              }, this),
+              /* @__PURE__ */ jsxDEV4("span", { className: "text-gray-400 text-xs", children: image.category.charAt(0).toUpperCase() + image.category.slice(1) }, void 0, !1, {
+                fileName: "app/routes/admin.manage.tsx",
+                lineNumber: 205,
+                columnNumber: 21
+              }, this)
+            ] }, void 0, !0, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 163,
+              lineNumber: 195,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV4("div", { className: "flex justify-end space-x-2", children: [
@@ -803,7 +867,7 @@ function ManageGallery() {
                 !1,
                 {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 166,
+                  lineNumber: 212,
                   columnNumber: 21
                 },
                 this
@@ -811,12 +875,12 @@ function ManageGallery() {
               /* @__PURE__ */ jsxDEV4(Form, { method: "post", className: "inline", children: [
                 /* @__PURE__ */ jsxDEV4("input", { type: "hidden", name: "imageId", value: image.id }, void 0, !1, {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 173,
+                  lineNumber: 219,
                   columnNumber: 23
                 }, this),
                 /* @__PURE__ */ jsxDEV4("input", { type: "hidden", name: "_action", value: "delete" }, void 0, !1, {
                   fileName: "app/routes/admin.manage.tsx",
-                  lineNumber: 174,
+                  lineNumber: 220,
                   columnNumber: 23
                 }, this),
                 /* @__PURE__ */ jsxDEV4(
@@ -835,24 +899,24 @@ function ManageGallery() {
                   !1,
                   {
                     fileName: "app/routes/admin.manage.tsx",
-                    lineNumber: 175,
+                    lineNumber: 221,
                     columnNumber: 23
                   },
                   this
                 )
               ] }, void 0, !0, {
                 fileName: "app/routes/admin.manage.tsx",
-                lineNumber: 172,
+                lineNumber: 218,
                 columnNumber: 21
               }, this)
             ] }, void 0, !0, {
               fileName: "app/routes/admin.manage.tsx",
-              lineNumber: 165,
+              lineNumber: 211,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.manage.tsx",
-            lineNumber: 161,
+            lineNumber: 193,
             columnNumber: 17
           }, this)
         ]
@@ -861,22 +925,22 @@ function ManageGallery() {
       !0,
       {
         fileName: "app/routes/admin.manage.tsx",
-        lineNumber: 96,
+        lineNumber: 107,
         columnNumber: 13
       },
       this
     )) }, void 0, !1, {
       fileName: "app/routes/admin.manage.tsx",
-      lineNumber: 94,
+      lineNumber: 105,
       columnNumber: 9
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/admin.manage.tsx",
-    lineNumber: 74,
+    lineNumber: 85,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/admin.manage.tsx",
-    lineNumber: 73,
+    lineNumber: 84,
     columnNumber: 5
   }, this);
 }
@@ -895,17 +959,18 @@ import sharp from "sharp";
 import { jsxDEV as jsxDEV5 } from "react/jsx-dev-runtime";
 var loader3 = async ({ request }) => (await requireAdminUser(request), json2({})), action2 = async ({ request }) => {
   await requireAdminUser(request);
-  let formData = await request.formData(), image = formData.get("image"), category = formData.get("category"), alt = formData.get("alt");
+  let formData = await request.formData(), image = formData.get("image"), category = formData.get("category"), service = formData.get("service"), alt = formData.get("alt");
   if (console.log("Upload attempt:", {
     hasImage: !!image,
     imageType: image?.type,
     imageName: image?.name,
     imageSize: image?.size,
     category,
+    service,
     alt
-  }), !image || !category || !alt)
+  }), !image || !category || !service || !alt)
     return json2(
-      { error: "Image, category, and description are required" },
+      { error: "Image, category, service, and description are required" },
       { status: 400 }
     );
   try {
@@ -931,7 +996,8 @@ var loader3 = async ({ request }) => (await requireAdminUser(request), json2({})
     let savedImage = await addImage({
       src: imageUrl,
       alt,
-      category
+      category,
+      service
     });
     return console.log("Image metadata saved:", savedImage), json2({ success: !0, imageUrl });
   } catch (error) {
@@ -951,12 +1017,12 @@ function AdminUpload() {
     /* @__PURE__ */ jsxDEV5("div", { className: "text-center", children: [
       /* @__PURE__ */ jsxDEV5("h2", { className: "text-3xl font-extrabold text-white", children: "Upload Image" }, void 0, !1, {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 113,
+        lineNumber: 126,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV5("p", { className: "mt-2 text-sm text-gray-400", children: "Add new images to the gallery" }, void 0, !1, {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 114,
+        lineNumber: 127,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV5(
@@ -970,14 +1036,14 @@ function AdminUpload() {
         !1,
         {
           fileName: "app/routes/admin.upload.tsx",
-          lineNumber: 117,
+          lineNumber: 130,
           columnNumber: 11
         },
         this
       )
     ] }, void 0, !0, {
       fileName: "app/routes/admin.upload.tsx",
-      lineNumber: 112,
+      lineNumber: 125,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV5(
@@ -1000,7 +1066,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 132,
+                  lineNumber: 145,
                   columnNumber: 15
                 },
                 this
@@ -1024,14 +1090,74 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 138,
+                  lineNumber: 151,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 131,
+              lineNumber: 144,
+              columnNumber: 13
+            }, this),
+            /* @__PURE__ */ jsxDEV5("div", { children: [
+              /* @__PURE__ */ jsxDEV5(
+                "label",
+                {
+                  htmlFor: "service",
+                  className: "block text-sm font-medium text-white",
+                  children: "Service"
+                },
+                void 0,
+                !1,
+                {
+                  fileName: "app/routes/admin.upload.tsx",
+                  lineNumber: 167,
+                  columnNumber: 15
+                },
+                this
+              ),
+              /* @__PURE__ */ jsxDEV5(
+                "select",
+                {
+                  id: "service",
+                  name: "service",
+                  required: !0,
+                  className: "mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md",
+                  children: [
+                    /* @__PURE__ */ jsxDEV5("option", { value: "", children: "Select a service" }, void 0, !1, {
+                      fileName: "app/routes/admin.upload.tsx",
+                      lineNumber: 179,
+                      columnNumber: 17
+                    }, this),
+                    [
+                      "general-contracting",
+                      "framing",
+                      "concrete",
+                      "door-window-installation",
+                      "finish-carpentry-trim",
+                      "drywall"
+                    ].map((service) => /* @__PURE__ */ jsxDEV5("option", { value: service, children: service.split("-").map(
+                      (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                    ).join(" ") }, service, !1, {
+                      fileName: "app/routes/admin.upload.tsx",
+                      lineNumber: 181,
+                      columnNumber: 19
+                    }, this))
+                  ]
+                },
+                void 0,
+                !0,
+                {
+                  fileName: "app/routes/admin.upload.tsx",
+                  lineNumber: 173,
+                  columnNumber: 15
+                },
+                this
+              )
+            ] }, void 0, !0, {
+              fileName: "app/routes/admin.upload.tsx",
+              lineNumber: 166,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV5("div", { children: [
@@ -1046,7 +1172,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 154,
+                  lineNumber: 194,
                   columnNumber: 15
                 },
                 this
@@ -1061,32 +1187,17 @@ function AdminUpload() {
                   children: [
                     /* @__PURE__ */ jsxDEV5("option", { value: "", children: "Select a category" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 166,
+                      lineNumber: 206,
                       columnNumber: 17
                     }, this),
-                    /* @__PURE__ */ jsxDEV5("option", { value: "Framing", children: "Framing" }, void 0, !1, {
+                    /* @__PURE__ */ jsxDEV5("option", { value: "residential", children: "Residential" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 167,
+                      lineNumber: 207,
                       columnNumber: 17
                     }, this),
-                    /* @__PURE__ */ jsxDEV5("option", { value: "Decking", children: "Decking" }, void 0, !1, {
+                    /* @__PURE__ */ jsxDEV5("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
                       fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 168,
-                      columnNumber: 17
-                    }, this),
-                    /* @__PURE__ */ jsxDEV5("option", { value: "New Construction", children: "New Construction" }, void 0, !1, {
-                      fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 169,
-                      columnNumber: 17
-                    }, this),
-                    /* @__PURE__ */ jsxDEV5("option", { value: "Renovation", children: "Renovation" }, void 0, !1, {
-                      fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 170,
-                      columnNumber: 17
-                    }, this),
-                    /* @__PURE__ */ jsxDEV5("option", { value: "Commercial", children: "Commercial" }, void 0, !1, {
-                      fileName: "app/routes/admin.upload.tsx",
-                      lineNumber: 171,
+                      lineNumber: 208,
                       columnNumber: 17
                     }, this)
                   ]
@@ -1095,14 +1206,14 @@ function AdminUpload() {
                 !0,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 160,
+                  lineNumber: 200,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 153,
+              lineNumber: 193,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV5("div", { children: [
@@ -1117,7 +1228,7 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 176,
+                  lineNumber: 213,
                   columnNumber: 15
                 },
                 this
@@ -1136,29 +1247,29 @@ function AdminUpload() {
                 !1,
                 {
                   fileName: "app/routes/admin.upload.tsx",
-                  lineNumber: 182,
+                  lineNumber: 219,
                   columnNumber: 15
                 },
                 this
               )
             ] }, void 0, !0, {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 175,
+              lineNumber: 212,
               columnNumber: 13
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 130,
+            lineNumber: 143,
             columnNumber: 11
           }, this),
           actionData?.error && /* @__PURE__ */ jsxDEV5("div", { className: "text-red-500 text-sm", children: actionData.error }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 194,
+            lineNumber: 231,
             columnNumber: 13
           }, this),
           actionData?.success && /* @__PURE__ */ jsxDEV5("div", { className: "text-green-500 text-sm", children: "Image uploaded successfully!" }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 198,
+            lineNumber: 235,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV5("div", { children: /* @__PURE__ */ jsxDEV5(
@@ -1172,13 +1283,13 @@ function AdminUpload() {
             !1,
             {
               fileName: "app/routes/admin.upload.tsx",
-              lineNumber: 204,
+              lineNumber: 241,
               columnNumber: 13
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/admin.upload.tsx",
-            lineNumber: 203,
+            lineNumber: 240,
             columnNumber: 11
           }, this)
         ]
@@ -1187,18 +1298,18 @@ function AdminUpload() {
       !0,
       {
         fileName: "app/routes/admin.upload.tsx",
-        lineNumber: 125,
+        lineNumber: 138,
         columnNumber: 9
       },
       this
     )
   ] }, void 0, !0, {
     fileName: "app/routes/admin.upload.tsx",
-    lineNumber: 111,
+    lineNumber: 124,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/admin.upload.tsx",
-    lineNumber: 110,
+    lineNumber: 123,
     columnNumber: 5
   }, this);
 }
@@ -1207,93 +1318,43 @@ function AdminUpload() {
 var admin_login_exports = {};
 __export(admin_login_exports, {
   action: () => action3,
-  default: () => AdminLogin,
+  default: () => Login,
   loader: () => loader4
 });
 import { json as json3, redirect as redirect3 } from "@remix-run/node";
 import { Form as Form3, useActionData as useActionData3 } from "@remix-run/react";
 import bcrypt from "bcryptjs";
 import { jsxDEV as jsxDEV6 } from "react/jsx-dev-runtime";
-var loader4 = async ({ request }) => {
-  console.log("Login page loaded - TESTING");
+var action3 = async ({ request }) => {
   try {
-    let session = await getUserSession(request), username = session.get("username");
-    return console.log("Login loader check:", {
-      hasSession: !!session,
-      username,
-      expectedUsername: process.env.ADMIN_USERNAME,
-      matches: username === process.env.ADMIN_USERNAME,
-      url: request.url
-    }), username === process.env.ADMIN_USERNAME ? (console.log("User already logged in, redirecting to upload"), redirect3("/admin/upload")) : username && username !== process.env.ADMIN_USERNAME ? (console.log("Invalid session found, clearing..."), redirect3("/admin/login", {
-      headers: {
-        "Set-Cookie": await storage.destroySession(session)
-      }
-    })) : json3({ message: "Login page loaded" });
-  } catch (error) {
-    return console.error("Login loader error:", error), json3({ message: "Login page loaded" });
-  }
-}, action3 = async ({ request }) => {
-  console.log(`
-=== Login Attempt Started - IMMEDIATE LOG ===`);
-  try {
-    request.method === "POST" && console.log("POST request received");
-    let formData = await request.formData(), username = formData.get("username"), password = formData.get("password");
-    console.log("Form data received:", {
-      username: username?.toString(),
-      passwordLength: password ? password.toString().length : 0
-    });
-    let ADMIN_USERNAME = process.env.ADMIN_USERNAME, ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
-    if (console.log("Environment variables:", {
-      ADMIN_USERNAME,
-      ADMIN_PASSWORD_HASH,
-      envUsernameLength: ADMIN_USERNAME?.length,
-      envHashLength: ADMIN_PASSWORD_HASH?.length
-    }), !ADMIN_USERNAME || !ADMIN_PASSWORD_HASH)
-      return console.error("Missing admin credentials in environment"), json3({ error: "Server configuration error" }, { status: 500 });
+    let formData = await request.formData(), username = formData.get("username")?.toString() ?? "", password = formData.get("password")?.toString() ?? "";
     if (!username || !password)
-      return console.log("Missing username or password in request"), json3(
+      return json3(
         { error: "Username and password are required" },
         { status: 400 }
       );
-    let usernameMatches = username === ADMIN_USERNAME;
-    if (console.log("Username check:", {
-      provided: username,
-      expected: ADMIN_USERNAME,
-      matches: usernameMatches
-    }), !usernameMatches)
-      return console.log("Username mismatch"), json3({ error: "Invalid credentials" }, { status: 401 });
-    console.log("Attempting password verification...");
-    let passwordMatch = await bcrypt.compare(
-      password.toString(),
-      ADMIN_PASSWORD_HASH
+    let isValidUsername = username === process.env.ADMIN_USERNAME, isValidPassword = await bcrypt.compare(
+      password,
+      process.env.ADMIN_PASSWORD_HASH || ""
     );
-    if (console.log("Password check result:", {
-      matches: passwordMatch
-    }), !passwordMatch)
-      return json3({ error: "Invalid credentials" }, { status: 401 });
-    console.log("Login successful, creating session...");
-    let existingSession = await getUserSession(request);
-    existingSession && await storage.destroySession(existingSession);
-    let session = await storage.getSession();
-    return session.set("username", username.toString()), redirect3("/admin/upload", {
-      headers: {
-        "Set-Cookie": await storage.commitSession(session)
-      }
+    return !isValidUsername || !isValidPassword ? json3({ error: "Invalid credentials" }, { status: 401 }) : createUserSession({
+      username,
+      redirectTo: "/admin/upload"
     });
   } catch (error) {
     return console.error("Login error:", error), json3({ error: "An error occurred during login" }, { status: 500 });
   }
-};
-function AdminLogin() {
+}, loader4 = async ({ request }) => (await getUserSession(request))?.get("username") ? redirect3("/admin/upload") : null;
+function Login() {
   let actionData = useActionData3();
-  return /* @__PURE__ */ jsxDEV6("div", { className: "min-h-screen bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV6("div", { className: "max-w-md w-full space-y-8", children: [
-    /* @__PURE__ */ jsxDEV6("div", { children: /* @__PURE__ */ jsxDEV6("h2", { className: "mt-6 text-center text-3xl font-extrabold text-white", children: "Admin Login" }, void 0, !1, {
+  return /* @__PURE__ */ jsxDEV6("div", { className: "min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV6("div", { className: "max-w-md w-full space-y-8", children: [
+    /* @__PURE__ */ jsxDEV6("div", { children: /* @__PURE__ */ jsxDEV6("h2", { className: "mt-6 text-center text-3xl font-extrabold text-gray-900", children: "Admin Login" }, void 0, !1, {
       fileName: "app/routes/admin.login.tsx",
-      lineNumber: 153,
+      lineNumber: 67,
       columnNumber: 11
     }, this) }, void 0, !1, {
       fileName: "app/routes/admin.login.tsx",
-      lineNumber: 152,
+      lineNumber: 66,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV6(Form3, { method: "post", className: "mt-8 space-y-6", children: [
@@ -1301,7 +1362,7 @@ function AdminLogin() {
         /* @__PURE__ */ jsxDEV6("div", { children: [
           /* @__PURE__ */ jsxDEV6("label", { htmlFor: "username", className: "sr-only", children: "Username" }, void 0, !1, {
             fileName: "app/routes/admin.login.tsx",
-            lineNumber: 160,
+            lineNumber: 74,
             columnNumber: 15
           }, this),
           /* @__PURE__ */ jsxDEV6(
@@ -1311,27 +1372,27 @@ function AdminLogin() {
               name: "username",
               type: "text",
               required: !0,
-              className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm",
+              className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm",
               placeholder: "Username"
             },
             void 0,
             !1,
             {
               fileName: "app/routes/admin.login.tsx",
-              lineNumber: 163,
+              lineNumber: 77,
               columnNumber: 15
             },
             this
           )
         ] }, void 0, !0, {
           fileName: "app/routes/admin.login.tsx",
-          lineNumber: 159,
+          lineNumber: 73,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV6("div", { children: [
           /* @__PURE__ */ jsxDEV6("label", { htmlFor: "password", className: "sr-only", children: "Password" }, void 0, !1, {
             fileName: "app/routes/admin.login.tsx",
-            lineNumber: 173,
+            lineNumber: 87,
             columnNumber: 15
           }, this),
           /* @__PURE__ */ jsxDEV6(
@@ -1341,65 +1402,65 @@ function AdminLogin() {
               name: "password",
               type: "password",
               required: !0,
-              className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm",
+              className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm",
               placeholder: "Password"
             },
             void 0,
             !1,
             {
               fileName: "app/routes/admin.login.tsx",
-              lineNumber: 176,
+              lineNumber: 90,
               columnNumber: 15
             },
             this
           )
         ] }, void 0, !0, {
           fileName: "app/routes/admin.login.tsx",
-          lineNumber: 172,
+          lineNumber: 86,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/admin.login.tsx",
-        lineNumber: 158,
+        lineNumber: 72,
         columnNumber: 11
       }, this),
-      actionData?.error && /* @__PURE__ */ jsxDEV6("div", { className: "text-red-500 text-sm", children: actionData.error }, void 0, !1, {
+      actionData?.error && /* @__PURE__ */ jsxDEV6("div", { className: "text-red-600 text-sm", children: actionData.error }, void 0, !1, {
         fileName: "app/routes/admin.login.tsx",
-        lineNumber: 188,
+        lineNumber: 102,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ jsxDEV6("div", { children: /* @__PURE__ */ jsxDEV6(
         "button",
         {
           type: "submit",
-          className: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500",
+          className: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
           children: "Sign in"
         },
         void 0,
         !1,
         {
           fileName: "app/routes/admin.login.tsx",
-          lineNumber: 192,
+          lineNumber: 106,
           columnNumber: 13
         },
         this
       ) }, void 0, !1, {
         fileName: "app/routes/admin.login.tsx",
-        lineNumber: 191,
+        lineNumber: 105,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/admin.login.tsx",
-      lineNumber: 157,
+      lineNumber: 71,
       columnNumber: 9
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/admin.login.tsx",
-    lineNumber: 151,
+    lineNumber: 65,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/admin.login.tsx",
-    lineNumber: 150,
+    lineNumber: 64,
     columnNumber: 5
   }, this);
 }
@@ -1416,8 +1477,8 @@ import { useState as useState2, useEffect } from "react";
 import { Resend } from "resend";
 import { jsxDEV as jsxDEV7 } from "react/jsx-dev-runtime";
 var action4 = async ({ request }) => {
-  let resend = new Resend(process.env.RESEND_API_KEY), formData = await request.formData(), name = formData.get("name"), email = formData.get("email"), phone = formData.get("phone"), contactPreference = formData.get("contactPreference"), projectType = formData.get("projectType"), projectDescription = formData.get("projectDescription"), timeline = formData.get("timeline");
-  if (!name || !email || !phone || !contactPreference || !projectType || !projectDescription || !timeline || typeof name != "string" || typeof email != "string" || typeof phone != "string" || typeof contactPreference != "string" || typeof projectType != "string" || typeof projectDescription != "string" || typeof timeline != "string")
+  let resend = new Resend(process.env.RESEND_API_KEY), formData = await request.formData(), name = formData.get("name"), email = formData.get("email"), phone = formData.get("phone"), contactPreference = formData.get("contactPreference"), scope = formData.get("scope"), projectType = formData.get("projectType"), projectDescription = formData.get("projectDescription"), timeline = formData.get("timeline");
+  if (!name || !email || !phone || !contactPreference || !scope || !projectType || !projectDescription || !timeline || typeof name != "string" || typeof email != "string" || typeof phone != "string" || typeof contactPreference != "string" || typeof scope != "string" || typeof projectType != "string" || typeof projectDescription != "string" || typeof timeline != "string")
     return json4(
       { success: !1, error: "All fields are required and must be valid." },
       { status: 400 }
@@ -1427,6 +1488,7 @@ var action4 = async ({ request }) => {
     email,
     phone,
     contactPreference,
+    scope,
     projectType,
     projectDescription,
     timeline
@@ -1434,7 +1496,7 @@ var action4 = async ({ request }) => {
   try {
     let { data: resendData, error } = await resend.emails.send({
       from: "Grit Construction <onboarding@resend.dev>",
-      to: ["stoney.harward@gmail.com"],
+      to: ["gritconstruction2023@gmail.com"],
       subject: `New Bid Request from ${data.name.charAt(0).toUpperCase() + data.name.slice(1)}`,
       html: `
         <h2>New Bid Request</h2>
@@ -1442,6 +1504,7 @@ var action4 = async ({ request }) => {
         <p><strong>Email:</strong> ${data.email.toLowerCase()}</p>
         <p><strong>Phone:</strong> ${data.phone}</p>
         <p><strong>Preferred Contact Method:</strong> ${data.contactPreference.charAt(0).toUpperCase() + data.contactPreference.slice(1)}</p>
+        <p><strong>Project Scope:</strong> ${data.scope.charAt(0).toUpperCase() + data.scope.slice(1)}</p>
         <p><strong>Project Type:</strong> ${data.projectType.charAt(0).toUpperCase() + data.projectType.slice(1)}</p>
         <p><strong>Project Description:</strong> ${data.projectDescription.charAt(0).toUpperCase() + data.projectDescription.slice(1)}</p>
         <p><strong>Desired Timeline:</strong> ${data.timeline.charAt(0).toUpperCase() + data.timeline.slice(1)}</p>
@@ -1476,6 +1539,7 @@ function RequestBid() {
     email: "",
     phone: "",
     contactPreference: "email",
+    scope: "",
     projectType: "",
     projectDescription: "",
     timeline: ""
@@ -1487,6 +1551,7 @@ function RequestBid() {
         email: "",
         phone: "",
         contactPreference: "email",
+        scope: "",
         projectType: "",
         projectDescription: "",
         timeline: ""
@@ -1523,7 +1588,7 @@ function RequestBid() {
       children: [
         /* @__PURE__ */ jsxDEV7("div", { className: "absolute inset-0 bg-black bg-opacity-50" }, void 0, !1, {
           fileName: "app/routes/request-bid.tsx",
-          lineNumber: 212,
+          lineNumber: 222,
           columnNumber: 7
         }, this),
         /* @__PURE__ */ jsxDEV7(
@@ -1550,7 +1615,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 229,
+                      lineNumber: 239,
                       columnNumber: 13
                     },
                     this
@@ -1560,7 +1625,7 @@ function RequestBid() {
                 !1,
                 {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 223,
+                  lineNumber: 233,
                   columnNumber: 11
                 },
                 this
@@ -1568,7 +1633,7 @@ function RequestBid() {
               fetcher.data?.message || "Request Sent Successfully!"
             ] }, void 0, !0, {
               fileName: "app/routes/request-bid.tsx",
-              lineNumber: 222,
+              lineNumber: 232,
               columnNumber: 9
             }, this)
           },
@@ -1576,7 +1641,7 @@ function RequestBid() {
           !1,
           {
             fileName: "app/routes/request-bid.tsx",
-            lineNumber: 215,
+            lineNumber: 225,
             columnNumber: 7
           },
           this
@@ -1585,22 +1650,22 @@ function RequestBid() {
           /* @__PURE__ */ jsxDEV7("div", { className: "text-center", children: [
             /* @__PURE__ */ jsxDEV7("h2", { className: "text-3xl font-extrabold text-white sm:text-4xl", children: "Request a Bid" }, void 0, !1, {
               fileName: "app/routes/request-bid.tsx",
-              lineNumber: 243,
+              lineNumber: 253,
               columnNumber: 13
             }, this),
             /* @__PURE__ */ jsxDEV7("p", { className: "mt-4 text-lg text-white", children: "Fill out the form below and we'll get back to you with a detailed quote for your project." }, void 0, !1, {
               fileName: "app/routes/request-bid.tsx",
-              lineNumber: 246,
+              lineNumber: 256,
               columnNumber: 13
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/request-bid.tsx",
-            lineNumber: 242,
+            lineNumber: 252,
             columnNumber: 11
           }, this),
           fetcher.data?.error && /* @__PURE__ */ jsxDEV7("div", { className: "mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
             fileName: "app/routes/request-bid.tsx",
-            lineNumber: 253,
+            lineNumber: 263,
             columnNumber: 13
           }, this),
           /* @__PURE__ */ jsxDEV7("div", { className: "mt-12", children: /* @__PURE__ */ jsxDEV7(
@@ -1622,7 +1687,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 265,
+                      lineNumber: 275,
                       columnNumber: 17
                     },
                     this
@@ -1642,14 +1707,14 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 271,
+                      lineNumber: 281,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 264,
+                  lineNumber: 274,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
@@ -1664,7 +1729,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 283,
+                      lineNumber: 293,
                       columnNumber: 17
                     },
                     this
@@ -1684,14 +1749,14 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 289,
+                      lineNumber: 299,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 282,
+                  lineNumber: 292,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
@@ -1706,7 +1771,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 301,
+                      lineNumber: 311,
                       columnNumber: 17
                     },
                     this
@@ -1726,20 +1791,20 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 307,
+                      lineNumber: 317,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 300,
+                  lineNumber: 310,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
                   /* @__PURE__ */ jsxDEV7("label", { className: "block text-sm font-medium text-white mb-2", children: "Preferred Contact Method" }, void 0, !1, {
                     fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 319,
+                    lineNumber: 329,
                     columnNumber: 17
                   }, this),
                   /* @__PURE__ */ jsxDEV7("div", { className: "flex space-x-6", children: [
@@ -1759,7 +1824,7 @@ function RequestBid() {
                         !1,
                         {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 324,
+                          lineNumber: 334,
                           columnNumber: 21
                         },
                         this
@@ -1775,14 +1840,14 @@ function RequestBid() {
                         !1,
                         {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 333,
+                          lineNumber: 343,
                           columnNumber: 21
                         },
                         this
                       )
                     ] }, void 0, !0, {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 323,
+                      lineNumber: 333,
                       columnNumber: 19
                     }, this),
                     /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
@@ -1801,7 +1866,7 @@ function RequestBid() {
                         !1,
                         {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 341,
+                          lineNumber: 351,
                           columnNumber: 21
                         },
                         this
@@ -1817,24 +1882,82 @@ function RequestBid() {
                         !1,
                         {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 350,
+                          lineNumber: 360,
                           columnNumber: 21
                         },
                         this
                       )
                     ] }, void 0, !0, {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 340,
+                      lineNumber: 350,
                       columnNumber: 19
                     }, this)
                   ] }, void 0, !0, {
                     fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 322,
+                    lineNumber: 332,
                     columnNumber: 17
                   }, this)
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 318,
+                  lineNumber: 328,
+                  columnNumber: 15
+                }, this),
+                /* @__PURE__ */ jsxDEV7("div", { children: [
+                  /* @__PURE__ */ jsxDEV7(
+                    "label",
+                    {
+                      htmlFor: "scope",
+                      className: "block text-sm font-medium text-white",
+                      children: "Project Type"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 371,
+                      columnNumber: 17
+                    },
+                    this
+                  ),
+                  /* @__PURE__ */ jsxDEV7(
+                    "select",
+                    {
+                      name: "scope",
+                      id: "scope",
+                      required: !0,
+                      value: formData.scope,
+                      onChange: handleChange,
+                      className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
+                      children: [
+                        /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project type" }, void 0, !1, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 385,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV7("option", { value: "residential", children: "Residential" }, void 0, !1, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 386,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV7("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 387,
+                          columnNumber: 19
+                        }, this)
+                      ]
+                    },
+                    void 0,
+                    !0,
+                    {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 377,
+                      columnNumber: 17
+                    },
+                    this
+                  )
+                ] }, void 0, !0, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 370,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
@@ -1843,13 +1966,13 @@ function RequestBid() {
                     {
                       htmlFor: "projectType",
                       className: "block text-sm font-medium text-white",
-                      children: "Project Type"
+                      children: "Project Scope"
                     },
                     void 0,
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 361,
+                      lineNumber: 392,
                       columnNumber: 17
                     },
                     this
@@ -1864,29 +1987,39 @@ function RequestBid() {
                       onChange: handleChange,
                       className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
                       children: [
-                        /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select a project type" }, void 0, !1, {
+                        /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project scope" }, void 0, !1, {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 375,
+                          lineNumber: 406,
                           columnNumber: 19
                         }, this),
-                        /* @__PURE__ */ jsxDEV7("option", { value: "residential", children: "Residential" }, void 0, !1, {
+                        /* @__PURE__ */ jsxDEV7("option", { value: "general-contracting", children: "General Contracting" }, void 0, !1, {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 376,
+                          lineNumber: 407,
                           columnNumber: 19
                         }, this),
-                        /* @__PURE__ */ jsxDEV7("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
+                        /* @__PURE__ */ jsxDEV7("option", { value: "framing", children: "Framing" }, void 0, !1, {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 377,
+                          lineNumber: 410,
                           columnNumber: 19
                         }, this),
-                        /* @__PURE__ */ jsxDEV7("option", { value: "renovation", children: "Renovation" }, void 0, !1, {
+                        /* @__PURE__ */ jsxDEV7("option", { value: "concrete", children: "Concrete" }, void 0, !1, {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 378,
+                          lineNumber: 411,
                           columnNumber: 19
                         }, this),
-                        /* @__PURE__ */ jsxDEV7("option", { value: "new-construction", children: "New Construction" }, void 0, !1, {
+                        /* @__PURE__ */ jsxDEV7("option", { value: "door-window-installation", children: "Door & Window Installation" }, void 0, !1, {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 379,
+                          lineNumber: 412,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV7("option", { value: "finish-carpentry-trim", children: "Finish Carpentry & Trim" }, void 0, !1, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 415,
+                          columnNumber: 19
+                        }, this),
+                        /* @__PURE__ */ jsxDEV7("option", { value: "drywall", children: "Drywall" }, void 0, !1, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 418,
                           columnNumber: 19
                         }, this)
                       ]
@@ -1895,14 +2028,14 @@ function RequestBid() {
                     !0,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 367,
+                      lineNumber: 398,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 360,
+                  lineNumber: 391,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
@@ -1917,7 +2050,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 384,
+                      lineNumber: 423,
                       columnNumber: 17
                     },
                     this
@@ -1937,14 +2070,14 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 390,
+                      lineNumber: 429,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 383,
+                  lineNumber: 422,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: [
@@ -1959,7 +2092,7 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 402,
+                      lineNumber: 441,
                       columnNumber: 17
                     },
                     this
@@ -1980,14 +2113,14 @@ function RequestBid() {
                     !1,
                     {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 408,
+                      lineNumber: 447,
                       columnNumber: 17
                     },
                     this
                   )
                 ] }, void 0, !0, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 401,
+                  lineNumber: 440,
                   columnNumber: 15
                 }, this),
                 /* @__PURE__ */ jsxDEV7("div", { children: /* @__PURE__ */ jsxDEV7(
@@ -2019,7 +2152,7 @@ function RequestBid() {
                               !1,
                               {
                                 fileName: "app/routes/request-bid.tsx",
-                                lineNumber: 438,
+                                lineNumber: 477,
                                 columnNumber: 25
                               },
                               this
@@ -2035,7 +2168,7 @@ function RequestBid() {
                               !1,
                               {
                                 fileName: "app/routes/request-bid.tsx",
-                                lineNumber: 446,
+                                lineNumber: 485,
                                 columnNumber: 25
                               },
                               this
@@ -2046,7 +2179,7 @@ function RequestBid() {
                         !0,
                         {
                           fileName: "app/routes/request-bid.tsx",
-                          lineNumber: 432,
+                          lineNumber: 471,
                           columnNumber: 23
                         },
                         this
@@ -2054,7 +2187,7 @@ function RequestBid() {
                       "Submitting..."
                     ] }, void 0, !0, {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 431,
+                      lineNumber: 470,
                       columnNumber: 21
                     }, this) : "Submit Request"
                   },
@@ -2062,13 +2195,13 @@ function RequestBid() {
                   !1,
                   {
                     fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 421,
+                    lineNumber: 460,
                     columnNumber: 17
                   },
                   this
                 ) }, void 0, !1, {
                   fileName: "app/routes/request-bid.tsx",
-                  lineNumber: 420,
+                  lineNumber: 459,
                   columnNumber: 15
                 }, this)
               ]
@@ -2077,22 +2210,22 @@ function RequestBid() {
             !0,
             {
               fileName: "app/routes/request-bid.tsx",
-              lineNumber: 259,
+              lineNumber: 269,
               columnNumber: 13
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/request-bid.tsx",
-            lineNumber: 258,
+            lineNumber: 268,
             columnNumber: 11
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/request-bid.tsx",
-          lineNumber: 241,
+          lineNumber: 251,
           columnNumber: 9
         }, this) }, void 0, !1, {
           fileName: "app/routes/request-bid.tsx",
-          lineNumber: 240,
+          lineNumber: 250,
           columnNumber: 7
         }, this)
       ]
@@ -2101,7 +2234,7 @@ function RequestBid() {
     !0,
     {
       fileName: "app/routes/request-bid.tsx",
-      lineNumber: 205,
+      lineNumber: 215,
       columnNumber: 5
     },
     this
@@ -2233,8 +2366,8 @@ var meta = () => [
     )
   },
   {
-    title: "Project Management",
-    description: "Comprehensive project management services to keep your construction project on time and within budget.",
+    title: "Concrete",
+    description: "Professional concrete services including foundations, driveways, patios, and decorative concrete work. We deliver durable and aesthetically pleasing concrete solutions.",
     icon: /* @__PURE__ */ jsxDEV9(
       "svg",
       {
@@ -2248,7 +2381,7 @@ var meta = () => [
             strokeLinecap: "round",
             strokeLinejoin: "round",
             strokeWidth: 2,
-            d: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            d: "M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2zM12 7v10M7 12h10"
           },
           void 0,
           !1,
@@ -2265,6 +2398,120 @@ var meta = () => [
       {
         fileName: "app/routes/services.tsx",
         lineNumber: 62,
+        columnNumber: 7
+      },
+      this
+    )
+  },
+  {
+    title: "Door & Window Installation",
+    description: "Expert installation of doors and windows for both new construction and replacement projects. We ensure proper fitting, sealing, and energy efficiency in every installation.",
+    icon: /* @__PURE__ */ jsxDEV9(
+      "svg",
+      {
+        className: "h-6 w-6",
+        fill: "none",
+        viewBox: "0 0 24 24",
+        stroke: "currentColor",
+        children: /* @__PURE__ */ jsxDEV9(
+          "path",
+          {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/services.tsx",
+            lineNumber: 88,
+            columnNumber: 9
+          },
+          this
+        )
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/services.tsx",
+        lineNumber: 82,
+        columnNumber: 7
+      },
+      this
+    )
+  },
+  {
+    title: "Finish Carpentry & Trim",
+    description: "Precision finish carpentry and trim work that adds the perfect finishing touch to your space. From baseboards to crown molding, we deliver exceptional craftsmanship and attention to detail.",
+    icon: /* @__PURE__ */ jsxDEV9(
+      "svg",
+      {
+        className: "h-6 w-6",
+        fill: "none",
+        viewBox: "0 0 24 24",
+        stroke: "currentColor",
+        children: /* @__PURE__ */ jsxDEV9(
+          "path",
+          {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/services.tsx",
+            lineNumber: 108,
+            columnNumber: 9
+          },
+          this
+        )
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/services.tsx",
+        lineNumber: 102,
+        columnNumber: 7
+      },
+      this
+    )
+  },
+  {
+    title: "Drywall",
+    description: "Professional drywall installation and finishing services. From hanging to taping and texturing, we create flawless walls and ceilings that provide the perfect foundation for your space.",
+    icon: /* @__PURE__ */ jsxDEV9(
+      "svg",
+      {
+        className: "h-6 w-6",
+        fill: "none",
+        viewBox: "0 0 24 24",
+        stroke: "currentColor",
+        children: /* @__PURE__ */ jsxDEV9(
+          "path",
+          {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M4 6h16M4 12h16M4 18h16"
+          },
+          void 0,
+          !1,
+          {
+            fileName: "app/routes/services.tsx",
+            lineNumber: 128,
+            columnNumber: 9
+          },
+          this
+        )
+      },
+      void 0,
+      !1,
+      {
+        fileName: "app/routes/services.tsx",
+        lineNumber: 122,
         columnNumber: 7
       },
       this
@@ -2292,7 +2539,7 @@ var meta = () => [
           !1,
           {
             fileName: "app/routes/services.tsx",
-            lineNumber: 88,
+            lineNumber: 148,
             columnNumber: 9
           },
           this
@@ -2302,7 +2549,7 @@ var meta = () => [
       !1,
       {
         fileName: "app/routes/services.tsx",
-        lineNumber: 82,
+        lineNumber: 142,
         columnNumber: 7
       },
       this
@@ -2320,66 +2567,66 @@ function Services() {
       children: [
         /* @__PURE__ */ jsxDEV9("div", { className: "absolute inset-0 bg-black bg-opacity-50" }, void 0, !1, {
           fileName: "app/routes/services.tsx",
-          lineNumber: 108,
+          lineNumber: 168,
           columnNumber: 7
         }, this),
         /* @__PURE__ */ jsxDEV9("div", { className: "relative max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8", children: [
           /* @__PURE__ */ jsxDEV9("div", { className: "text-center", children: [
             /* @__PURE__ */ jsxDEV9("h2", { className: "text-base text-red-600 font-semibold tracking-wide uppercase", children: "Our Services" }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 113,
+              lineNumber: 173,
               columnNumber: 11
             }, this),
             /* @__PURE__ */ jsxDEV9("p", { className: "mt-2 text-3xl font-extrabold text-white sm:text-4xl", children: "Professional Construction Services" }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 116,
+              lineNumber: 176,
               columnNumber: 11
             }, this),
             /* @__PURE__ */ jsxDEV9("p", { className: "mt-4 max-w-2xl text-xl text-white mx-auto", children: "We provide comprehensive construction services for both residential and commercial projects." }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 119,
+              lineNumber: 179,
               columnNumber: 11
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 112,
+            lineNumber: 172,
             columnNumber: 9
           }, this),
           /* @__PURE__ */ jsxDEV9("div", { className: "mt-20", children: /* @__PURE__ */ jsxDEV9("div", { className: "grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-2", children: services.map((service) => /* @__PURE__ */ jsxDEV9("div", { className: "relative", children: /* @__PURE__ */ jsxDEV9("div", { className: "relative bg-white bg-opacity-90 backdrop-blur-sm p-6 rounded-lg shadow-lg", children: [
             /* @__PURE__ */ jsxDEV9("div", { className: "absolute top-0 left-0 -mt-4 -ml-4", children: /* @__PURE__ */ jsxDEV9("div", { className: "flex items-center justify-center h-8 w-8 rounded-full bg-red-600 text-white", children: service.icon }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 131,
+              lineNumber: 191,
               columnNumber: 21
             }, this) }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 130,
+              lineNumber: 190,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV9("h3", { className: "text-lg font-medium text-black", children: service.title }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 135,
+              lineNumber: 195,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV9("p", { className: "mt-2 text-base text-black", children: service.description }, void 0, !1, {
               fileName: "app/routes/services.tsx",
-              lineNumber: 138,
+              lineNumber: 198,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 129,
+            lineNumber: 189,
             columnNumber: 17
           }, this) }, service.title, !1, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 128,
+            lineNumber: 188,
             columnNumber: 15
           }, this)) }, void 0, !1, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 126,
+            lineNumber: 186,
             columnNumber: 11
           }, this) }, void 0, !1, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 125,
+            lineNumber: 185,
             columnNumber: 9
           }, this),
           /* @__PURE__ */ jsxDEV9("div", { className: "mt-12 text-center", children: /* @__PURE__ */ jsxDEV9(
@@ -2393,18 +2640,18 @@ function Services() {
             !1,
             {
               fileName: "app/routes/services.tsx",
-              lineNumber: 148,
+              lineNumber: 208,
               columnNumber: 11
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/services.tsx",
-            lineNumber: 147,
+            lineNumber: 207,
             columnNumber: 9
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/services.tsx",
-          lineNumber: 111,
+          lineNumber: 171,
           columnNumber: 7
         }, this)
       ]
@@ -2413,7 +2660,7 @@ function Services() {
     !0,
     {
       fileName: "app/routes/services.tsx",
-      lineNumber: 101,
+      lineNumber: 161,
       columnNumber: 5
     },
     this
@@ -2448,7 +2695,7 @@ var meta2 = () => [
   try {
     let { data: resendData, error } = await resend.emails.send({
       from: "Grit Construction <onboarding@resend.dev>",
-      to: ["stoney.harward@gmail.com"],
+      to: ["gritconstruction2023@gmail.com"],
       subject: `New Contact Form Message from ${name.charAt(0).toUpperCase() + name.slice(1)}`,
       html: `
         <h2>New Contact Form Message</h2>
@@ -2574,7 +2821,7 @@ function Contact() {
                 },
                 this
               ),
-              /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "+1 (555) 123-4567" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "(435) 760-4055" }, void 0, !1, {
                 fileName: "app/routes/contact.tsx",
                 lineNumber: 190,
                 columnNumber: 21
@@ -2630,7 +2877,7 @@ function Contact() {
                 },
                 this
               ),
-              /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "contact@gritconstruction.com" }, void 0, !1, {
+              /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: "gritconstruction2023@gmail.com" }, void 0, !1, {
                 fileName: "app/routes/contact.tsx",
                 lineNumber: 209,
                 columnNumber: 21
@@ -2643,89 +2890,6 @@ function Contact() {
           ] }, void 0, !0, {
             fileName: "app/routes/contact.tsx",
             lineNumber: 193,
-            columnNumber: 17
-          }, this),
-          /* @__PURE__ */ jsxDEV10("div", { className: "mt-6", children: [
-            /* @__PURE__ */ jsxDEV10("dt", { className: "sr-only", children: "Address" }, void 0, !1, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 213,
-              columnNumber: 19
-            }, this),
-            /* @__PURE__ */ jsxDEV10("dd", { className: "flex", children: [
-              /* @__PURE__ */ jsxDEV10(
-                "svg",
-                {
-                  className: "flex-shrink-0 h-6 w-6 text-red-600",
-                  fill: "none",
-                  viewBox: "0 0 24 24",
-                  stroke: "currentColor",
-                  children: [
-                    /* @__PURE__ */ jsxDEV10(
-                      "path",
-                      {
-                        strokeLinecap: "round",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                        d: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/contact.tsx",
-                        lineNumber: 221,
-                        columnNumber: 23
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV10(
-                      "path",
-                      {
-                        strokeLinecap: "round",
-                        strokeLinejoin: "round",
-                        strokeWidth: 2,
-                        d: "M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/contact.tsx",
-                        lineNumber: 227,
-                        columnNumber: 23
-                      },
-                      this
-                    )
-                  ]
-                },
-                void 0,
-                !0,
-                {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 215,
-                  columnNumber: 21
-                },
-                this
-              ),
-              /* @__PURE__ */ jsxDEV10("span", { className: "ml-3", children: [
-                "123 Construction Ave",
-                /* @__PURE__ */ jsxDEV10("br", {}, void 0, !1, {
-                  fileName: "app/routes/contact.tsx",
-                  lineNumber: 236,
-                  columnNumber: 23
-                }, this),
-                "Building City, ST 12345"
-              ] }, void 0, !0, {
-                fileName: "app/routes/contact.tsx",
-                lineNumber: 234,
-                columnNumber: 21
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/contact.tsx",
-              lineNumber: 214,
-              columnNumber: 19
-            }, this)
-          ] }, void 0, !0, {
-            fileName: "app/routes/contact.tsx",
-            lineNumber: 212,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
@@ -2746,18 +2910,18 @@ function Contact() {
     /* @__PURE__ */ jsxDEV10("div", { className: "mt-12 sm:mt-16 md:mt-0", children: [
       /* @__PURE__ */ jsxDEV10("h2", { className: "text-2xl font-extrabold text-gray-900 sm:text-3xl", children: "Send us a message" }, void 0, !1, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 245,
+        lineNumber: 216,
         columnNumber: 13
       }, this),
       /* @__PURE__ */ jsxDEV10("div", { className: "mt-3", children: [
         fetcher.data?.error && /* @__PURE__ */ jsxDEV10("div", { className: "mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
           fileName: "app/routes/contact.tsx",
-          lineNumber: 250,
+          lineNumber: 221,
           columnNumber: 17
         }, this),
         showSuccess && /* @__PURE__ */ jsxDEV10("div", { className: "mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded", children: fetcher.data?.message }, void 0, !1, {
           fileName: "app/routes/contact.tsx",
-          lineNumber: 256,
+          lineNumber: 227,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ jsxDEV10(
@@ -2779,7 +2943,7 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 267,
+                    lineNumber: 238,
                     columnNumber: 19
                   },
                   this
@@ -2799,18 +2963,18 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 274,
+                    lineNumber: 245,
                     columnNumber: 21
                   },
                   this
                 ) }, void 0, !1, {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 273,
+                  lineNumber: 244,
                   columnNumber: 19
                 }, this)
               ] }, void 0, !0, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 266,
+                lineNumber: 237,
                 columnNumber: 17
               }, this),
               /* @__PURE__ */ jsxDEV10("div", { children: [
@@ -2825,7 +2989,7 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 287,
+                    lineNumber: 258,
                     columnNumber: 19
                   },
                   this
@@ -2845,18 +3009,18 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 294,
+                    lineNumber: 265,
                     columnNumber: 21
                   },
                   this
                 ) }, void 0, !1, {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 293,
+                  lineNumber: 264,
                   columnNumber: 19
                 }, this)
               ] }, void 0, !0, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 286,
+                lineNumber: 257,
                 columnNumber: 17
               }, this),
               /* @__PURE__ */ jsxDEV10("div", { children: [
@@ -2871,7 +3035,7 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 307,
+                    lineNumber: 278,
                     columnNumber: 19
                   },
                   this
@@ -2891,18 +3055,18 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 314,
+                    lineNumber: 285,
                     columnNumber: 21
                   },
                   this
                 ) }, void 0, !1, {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 313,
+                  lineNumber: 284,
                   columnNumber: 19
                 }, this)
               ] }, void 0, !0, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 306,
+                lineNumber: 277,
                 columnNumber: 17
               }, this),
               /* @__PURE__ */ jsxDEV10("div", { children: [
@@ -2917,7 +3081,7 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 327,
+                    lineNumber: 298,
                     columnNumber: 19
                   },
                   this
@@ -2937,18 +3101,18 @@ function Contact() {
                   !1,
                   {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 334,
+                    lineNumber: 305,
                     columnNumber: 21
                   },
                   this
                 ) }, void 0, !1, {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 333,
+                  lineNumber: 304,
                   columnNumber: 19
                 }, this)
               ] }, void 0, !0, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 326,
+                lineNumber: 297,
                 columnNumber: 17
               }, this),
               /* @__PURE__ */ jsxDEV10("div", { children: /* @__PURE__ */ jsxDEV10(
@@ -2980,7 +3144,7 @@ function Contact() {
                             !1,
                             {
                               fileName: "app/routes/contact.tsx",
-                              lineNumber: 360,
+                              lineNumber: 331,
                               columnNumber: 27
                             },
                             this
@@ -2996,7 +3160,7 @@ function Contact() {
                             !1,
                             {
                               fileName: "app/routes/contact.tsx",
-                              lineNumber: 368,
+                              lineNumber: 339,
                               columnNumber: 27
                             },
                             this
@@ -3007,7 +3171,7 @@ function Contact() {
                       !0,
                       {
                         fileName: "app/routes/contact.tsx",
-                        lineNumber: 354,
+                        lineNumber: 325,
                         columnNumber: 25
                       },
                       this
@@ -3015,7 +3179,7 @@ function Contact() {
                     "Sending..."
                   ] }, void 0, !0, {
                     fileName: "app/routes/contact.tsx",
-                    lineNumber: 353,
+                    lineNumber: 324,
                     columnNumber: 23
                   }, this) : "Send Message"
                 },
@@ -3023,13 +3187,13 @@ function Contact() {
                 !1,
                 {
                   fileName: "app/routes/contact.tsx",
-                  lineNumber: 347,
+                  lineNumber: 318,
                   columnNumber: 19
                 },
                 this
               ) }, void 0, !1, {
                 fileName: "app/routes/contact.tsx",
-                lineNumber: 346,
+                lineNumber: 317,
                 columnNumber: 17
               }, this)
             ]
@@ -3038,19 +3202,19 @@ function Contact() {
           !0,
           {
             fileName: "app/routes/contact.tsx",
-            lineNumber: 261,
+            lineNumber: 232,
             columnNumber: 15
           },
           this
         )
       ] }, void 0, !0, {
         fileName: "app/routes/contact.tsx",
-        lineNumber: 248,
+        lineNumber: 219,
         columnNumber: 13
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/contact.tsx",
-      lineNumber: 244,
+      lineNumber: 215,
       columnNumber: 11
     }, this)
   ] }, void 0, !0, {
@@ -3083,47 +3247,90 @@ var loader6 = async () => {
   return json7({ images });
 };
 function Gallery() {
-  let { images } = useLoaderData2(), [selectedCategory, setSelectedCategory] = React5.useState("all"), categories = ["all", ...new Set(images.map((img) => img.category))], filteredImages = selectedCategory === "all" ? images : images.filter((img) => img.category === selectedCategory);
+  let { images } = useLoaderData2(), [selectedCategory, setSelectedCategory] = React5.useState("all"), [selectedService, setSelectedService] = React5.useState("all"), uniqueServices = [...new Set(images.map((img) => img.service))], uniqueCategories = [...new Set(images.map((img) => img.category))], filteredImages = images.filter((img) => {
+    let categoryMatch = selectedCategory === "all" || img.category === selectedCategory, serviceMatch = selectedService === "all" || img.service === selectedService;
+    return categoryMatch && serviceMatch;
+  });
   return /* @__PURE__ */ jsxDEV11("div", { className: "min-h-screen bg-white py-12", children: /* @__PURE__ */ jsxDEV11("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [
     /* @__PURE__ */ jsxDEV11("div", { className: "text-center", children: [
       /* @__PURE__ */ jsxDEV11("h2", { className: "text-3xl font-extrabold text-gray-900 sm:text-4xl", children: "Our Work" }, void 0, !1, {
         fileName: "app/routes/gallery.tsx",
-        lineNumber: 27,
+        lineNumber: 40,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV11("p", { className: "mt-4 text-lg text-gray-600", children: "Browse through our portfolio of completed projects" }, void 0, !1, {
         fileName: "app/routes/gallery.tsx",
-        lineNumber: 30,
+        lineNumber: 43,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/gallery.tsx",
-      lineNumber: 26,
+      lineNumber: 39,
       columnNumber: 9
     }, this),
-    /* @__PURE__ */ jsxDEV11("div", { className: "mt-8 flex justify-center space-x-4", children: categories.map((category) => /* @__PURE__ */ jsxDEV11(
-      "button",
-      {
-        onClick: () => setSelectedCategory(category),
-        className: `px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`,
-        children: category.charAt(0).toUpperCase() + category.slice(1)
-      },
-      category,
-      !1,
-      {
-        fileName: "app/routes/gallery.tsx",
-        lineNumber: 38,
-        columnNumber: 13
-      },
-      this
-    )) }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV11("div", { className: "mt-8", children: /* @__PURE__ */ jsxDEV11("div", { className: "flex flex-wrap justify-center gap-2", children: [
+      /* @__PURE__ */ jsxDEV11(
+        "button",
+        {
+          onClick: () => {
+            setSelectedCategory("all"), setSelectedService("all");
+          },
+          className: `px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === "all" && selectedService === "all" ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`,
+          children: "All"
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/routes/gallery.tsx",
+          lineNumber: 52,
+          columnNumber: 13
+        },
+        this
+      ),
+      uniqueServices.map((service) => /* @__PURE__ */ jsxDEV11(
+        "button",
+        {
+          onClick: () => setSelectedService(service),
+          className: `px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedService === service ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`,
+          children: service.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+        },
+        service,
+        !1,
+        {
+          fileName: "app/routes/gallery.tsx",
+          lineNumber: 65,
+          columnNumber: 15
+        },
+        this
+      )),
+      uniqueCategories.map((category) => /* @__PURE__ */ jsxDEV11(
+        "button",
+        {
+          onClick: () => setSelectedCategory(category),
+          className: `px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category ? "bg-red-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`,
+          children: category.charAt(0).toUpperCase() + category.slice(1)
+        },
+        category,
+        !1,
+        {
+          fileName: "app/routes/gallery.tsx",
+          lineNumber: 83,
+          columnNumber: 15
+        },
+        this
+      ))
+    ] }, void 0, !0, {
       fileName: "app/routes/gallery.tsx",
-      lineNumber: 36,
+      lineNumber: 50,
+      columnNumber: 11
+    }, this) }, void 0, !1, {
+      fileName: "app/routes/gallery.tsx",
+      lineNumber: 49,
       columnNumber: 9
     }, this),
-    /* @__PURE__ */ jsxDEV11("div", { className: "mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8", children: filteredImages.length === 0 ? /* @__PURE__ */ jsxDEV11("div", { className: "col-span-3 text-center text-gray-500", children: "No images found in this category" }, void 0, !1, {
+    /* @__PURE__ */ jsxDEV11("div", { className: "mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8", children: filteredImages.length === 0 ? /* @__PURE__ */ jsxDEV11("div", { className: "col-span-3 text-center text-gray-500", children: "No images found for the selected filters" }, void 0, !1, {
       fileName: "app/routes/gallery.tsx",
-      lineNumber: 55,
+      lineNumber: 101,
       columnNumber: 13
     }, this) : filteredImages.map((image) => /* @__PURE__ */ jsxDEV11(
       "div",
@@ -3141,7 +3348,7 @@ function Gallery() {
             !1,
             {
               fileName: "app/routes/gallery.tsx",
-              lineNumber: 64,
+              lineNumber: 110,
               columnNumber: 17
             },
             this
@@ -3149,21 +3356,39 @@ function Gallery() {
           /* @__PURE__ */ jsxDEV11("div", { className: "absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end", children: /* @__PURE__ */ jsxDEV11("div", { className: "p-4 w-full", children: [
             /* @__PURE__ */ jsxDEV11("p", { className: "text-white text-sm", children: image.alt }, void 0, !1, {
               fileName: "app/routes/gallery.tsx",
-              lineNumber: 71,
+              lineNumber: 117,
               columnNumber: 21
             }, this),
-            /* @__PURE__ */ jsxDEV11("span", { className: "text-red-400 text-xs mt-1 block", children: image.category }, void 0, !1, {
+            /* @__PURE__ */ jsxDEV11("div", { className: "flex gap-2 mt-1", children: [
+              /* @__PURE__ */ jsxDEV11("span", { className: "text-red-400 text-xs", children: image.service?.split("-").map(
+                (word) => word.charAt(0).toUpperCase() + word.slice(1)
+              ).join(" ") }, void 0, !1, {
+                fileName: "app/routes/gallery.tsx",
+                lineNumber: 119,
+                columnNumber: 23
+              }, this),
+              /* @__PURE__ */ jsxDEV11("span", { className: "text-gray-300 text-xs", children: "\u2022" }, void 0, !1, {
+                fileName: "app/routes/gallery.tsx",
+                lineNumber: 128,
+                columnNumber: 23
+              }, this),
+              /* @__PURE__ */ jsxDEV11("span", { className: "text-gray-300 text-xs", children: image.category.charAt(0).toUpperCase() + image.category.slice(1) }, void 0, !1, {
+                fileName: "app/routes/gallery.tsx",
+                lineNumber: 129,
+                columnNumber: 23
+              }, this)
+            ] }, void 0, !0, {
               fileName: "app/routes/gallery.tsx",
-              lineNumber: 72,
+              lineNumber: 118,
               columnNumber: 21
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/gallery.tsx",
-            lineNumber: 70,
+            lineNumber: 116,
             columnNumber: 19
           }, this) }, void 0, !1, {
             fileName: "app/routes/gallery.tsx",
-            lineNumber: 69,
+            lineNumber: 115,
             columnNumber: 17
           }, this)
         ]
@@ -3172,22 +3397,22 @@ function Gallery() {
       !0,
       {
         fileName: "app/routes/gallery.tsx",
-        lineNumber: 60,
+        lineNumber: 106,
         columnNumber: 15
       },
       this
     )) }, void 0, !1, {
       fileName: "app/routes/gallery.tsx",
-      lineNumber: 53,
+      lineNumber: 99,
       columnNumber: 9
     }, this)
   ] }, void 0, !0, {
     fileName: "app/routes/gallery.tsx",
-    lineNumber: 25,
+    lineNumber: 38,
     columnNumber: 7
   }, this) }, void 0, !1, {
     fileName: "app/routes/gallery.tsx",
-    lineNumber: 24,
+    lineNumber: 37,
     columnNumber: 5
   }, this);
 }
@@ -3214,8 +3439,8 @@ function Index() {
         /* @__PURE__ */ jsxDEV12(
           "img",
           {
-            src: "https://images.unsplash.com/photo-1591825729269-caeb344f6df2",
-            alt: "Luxury wrap-around deck",
+            src: "/images/IMG_4391.jpg",
+            alt: "Quality Construction",
             className: "w-full h-full object-cover"
           },
           void 0,
@@ -3244,7 +3469,26 @@ function Index() {
             lineNumber: 34,
             columnNumber: 19
           }, this),
-          /* @__PURE__ */ jsxDEV12("span", { className: "block text-red-600 drop-shadow-lg", children: "Built with Grit" }, void 0, !1, {
+          /* @__PURE__ */ jsxDEV12("span", { className: "block text-red-600 drop-shadow-lg", children: [
+            "Built with",
+            " ",
+            /* @__PURE__ */ jsxDEV12(
+              "img",
+              {
+                src: "/images/GRIT_red.png",
+                alt: "Grit",
+                className: "h-16 w-auto inline-block"
+              },
+              void 0,
+              !1,
+              {
+                fileName: "app/routes/_index.tsx",
+                lineNumber: 37,
+                columnNumber: 21
+              },
+              this
+            )
+          ] }, void 0, !0, {
             fileName: "app/routes/_index.tsx",
             lineNumber: 35,
             columnNumber: 19
@@ -3256,7 +3500,7 @@ function Index() {
         }, this),
         /* @__PURE__ */ jsxDEV12("p", { className: "mt-3 text-base text-white drop-shadow sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0", children: "Professional general contracting and framing services for your residential and commercial projects. Get expert craftsmanship and reliable service." }, void 0, !1, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 39,
+          lineNumber: 44,
           columnNumber: 17
         }, this),
         /* @__PURE__ */ jsxDEV12("div", { className: "mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start", children: [
@@ -3271,13 +3515,13 @@ function Index() {
             !1,
             {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 46,
+              lineNumber: 51,
               columnNumber: 21
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 45,
+            lineNumber: 50,
             columnNumber: 19
           }, this),
           /* @__PURE__ */ jsxDEV12("div", { className: "mt-3 sm:mt-0 sm:ml-3", children: /* @__PURE__ */ jsxDEV12(
@@ -3291,18 +3535,18 @@ function Index() {
             !1,
             {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 54,
+              lineNumber: 59,
               columnNumber: 21
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 53,
+            lineNumber: 58,
             columnNumber: 19
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 44,
+          lineNumber: 49,
           columnNumber: 17
         }, this)
       ] }, void 0, !0, {
@@ -3331,17 +3575,17 @@ function Index() {
       /* @__PURE__ */ jsxDEV12("div", { className: "lg:text-center", children: [
         /* @__PURE__ */ jsxDEV12("h2", { className: "text-base text-red-600 font-semibold tracking-wide uppercase", children: "Our Services" }, void 0, !1, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 72,
+          lineNumber: 77,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV12("p", { className: "mt-2 text-3xl leading-8 font-extrabold tracking-tight text-black sm:text-4xl", children: "Professional Construction Services" }, void 0, !1, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 75,
+          lineNumber: 80,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/_index.tsx",
-        lineNumber: 71,
+        lineNumber: 76,
         columnNumber: 11
       }, this),
       /* @__PURE__ */ jsxDEV12("div", { className: "mt-10", children: /* @__PURE__ */ jsxDEV12("div", { className: "space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10", children: [
@@ -3365,7 +3609,7 @@ function Index() {
                 !1,
                 {
                   fileName: "app/routes/_index.tsx",
-                  lineNumber: 91,
+                  lineNumber: 96,
                   columnNumber: 21
                 },
                 this
@@ -3375,34 +3619,34 @@ function Index() {
             !1,
             {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 85,
+              lineNumber: 90,
               columnNumber: 19
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 84,
+            lineNumber: 89,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV12("div", { className: "ml-16", children: [
             /* @__PURE__ */ jsxDEV12("h3", { className: "text-lg leading-6 font-medium text-black", children: "General Contracting" }, void 0, !1, {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 100,
+              lineNumber: 105,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV12("p", { className: "mt-2 text-base text-black", children: "Full-service general contracting for residential and commercial projects." }, void 0, !1, {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 103,
+              lineNumber: 108,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 99,
+            lineNumber: 104,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 83,
+          lineNumber: 88,
           columnNumber: 15
         }, this),
         /* @__PURE__ */ jsxDEV12("div", { className: "relative", children: [
@@ -3425,7 +3669,7 @@ function Index() {
                 !1,
                 {
                   fileName: "app/routes/_index.tsx",
-                  lineNumber: 119,
+                  lineNumber: 124,
                   columnNumber: 21
                 },
                 this
@@ -3435,52 +3679,52 @@ function Index() {
             !1,
             {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 113,
+              lineNumber: 118,
               columnNumber: 19
             },
             this
           ) }, void 0, !1, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 112,
+            lineNumber: 117,
             columnNumber: 17
           }, this),
           /* @__PURE__ */ jsxDEV12("div", { className: "ml-16", children: [
             /* @__PURE__ */ jsxDEV12("h3", { className: "text-lg leading-6 font-medium text-black", children: "Framing" }, void 0, !1, {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 128,
+              lineNumber: 133,
               columnNumber: 19
             }, this),
             /* @__PURE__ */ jsxDEV12("p", { className: "mt-2 text-base text-black", children: "Expert framing services for new construction and renovations." }, void 0, !1, {
               fileName: "app/routes/_index.tsx",
-              lineNumber: 131,
+              lineNumber: 136,
               columnNumber: 19
             }, this)
           ] }, void 0, !0, {
             fileName: "app/routes/_index.tsx",
-            lineNumber: 127,
+            lineNumber: 132,
             columnNumber: 17
           }, this)
         ] }, void 0, !0, {
           fileName: "app/routes/_index.tsx",
-          lineNumber: 111,
+          lineNumber: 116,
           columnNumber: 15
         }, this)
       ] }, void 0, !0, {
         fileName: "app/routes/_index.tsx",
-        lineNumber: 81,
+        lineNumber: 86,
         columnNumber: 13
       }, this) }, void 0, !1, {
         fileName: "app/routes/_index.tsx",
-        lineNumber: 80,
+        lineNumber: 85,
         columnNumber: 11
       }, this)
     ] }, void 0, !0, {
       fileName: "app/routes/_index.tsx",
-      lineNumber: 70,
+      lineNumber: 75,
       columnNumber: 9
     }, this) }, void 0, !1, {
       fileName: "app/routes/_index.tsx",
-      lineNumber: 69,
+      lineNumber: 74,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
@@ -3491,7 +3735,7 @@ function Index() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-RT5UVSDV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-S7745XDI.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-CFLGZQ75.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-5EIWMCY7.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-2MHTU2ZC.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-EQR2TLMC.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-V6ZZAOOY.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-JVZWW3C5.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-4X364NUA.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "e872a939", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1741906558632 }, url: "/build/manifest-E872A939.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-BUMXJNE6.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-GGGA4FTQ.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-QE4YFCUY.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-4IBF3VDZ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "root", path: "admin/login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-5SJDVTVJ.js", imports: ["/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "root", path: "admin/manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-TNRPX7NQ.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "root", path: "admin/test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-OSV2EZD4.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "root", path: "admin/upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-K4DH6NNJ.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-N2ARPQVV.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-KIPMUYXB.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-NFAKSUTW.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-GM7BS5OR.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "210bbbb4", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1742250255098 }, url: "/build/manifest-210BBBB4.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

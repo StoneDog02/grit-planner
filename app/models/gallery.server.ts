@@ -6,6 +6,7 @@ export interface GalleryImage {
   src: string;
   alt: string;
   category: string;
+  service: string;
   createdAt: string;
 }
 
@@ -88,7 +89,7 @@ export async function addImage(
 
 export async function updateImage(
   id: string,
-  updates: Partial<Pick<GalleryImage, "alt" | "category">>
+  updates: Partial<Pick<GalleryImage, "alt" | "category" | "service">>
 ): Promise<GalleryImage | null> {
   const index = galleryImages.findIndex((img) => img.id === id);
   if (index === -1) return null;

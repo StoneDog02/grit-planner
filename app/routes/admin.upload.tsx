@@ -26,6 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const image = formData.get("image") as File;
   const category = formData.get("category") as string;
+  const service = formData.get("service") as string;
   const alt = formData.get("alt") as string;
 
   console.log("Upload attempt:", {
@@ -34,12 +35,13 @@ export const action: ActionFunction = async ({ request }) => {
     imageName: image?.name,
     imageSize: image?.size,
     category,
+    service,
     alt,
   });
 
-  if (!image || !category || !alt) {
+  if (!image || !category || !service || !alt) {
     return json(
-      { error: "Image, category, and description are required" },
+      { error: "Image, category, service, and description are required" },
       { status: 400 }
     );
   }
@@ -84,6 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
       src: imageUrl,
       alt,
       category,
+      service,
     });
 
     console.log("Image metadata saved:", savedImage);
@@ -105,6 +108,16 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function AdminUpload() {
   const actionData = useActionData<ActionData>();
+
+  // Define available services
+  const services = [
+    "general-contracting",
+    "framing",
+    "concrete",
+    "door-window-installation",
+    "finish-carpentry-trim",
+    "drywall",
+  ];
 
   return (
     <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
@@ -152,6 +165,33 @@ export default function AdminUpload() {
 
             <div>
               <label
+                htmlFor="service"
+                className="block text-sm font-medium text-white"
+              >
+                Service
+              </label>
+              <select
+                id="service"
+                name="service"
+                required
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
+              >
+                <option value="">Select a service</option>
+                {services.map((service) => (
+                  <option key={service} value={service}>
+                    {service
+                      .split("-")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ")}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label
                 htmlFor="category"
                 className="block text-sm font-medium text-white"
               >
@@ -164,11 +204,8 @@ export default function AdminUpload() {
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
               >
                 <option value="">Select a category</option>
-                <option value="Framing">Framing</option>
-                <option value="Decking">Decking</option>
-                <option value="New Construction">New Construction</option>
-                <option value="Renovation">Renovation</option>
-                <option value="Commercial">Commercial</option>
+                <option value="residential">Residential</option>
+                <option value="commercial">Commercial</option>
               </select>
             </div>
 

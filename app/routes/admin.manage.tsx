@@ -44,16 +44,17 @@ export const action: ActionFunction = async ({ request }) => {
   if (action === "update") {
     const imageId = formData.get("imageId") as string;
     const category = formData.get("category") as string;
+    const service = formData.get("service") as string;
     const alt = formData.get("alt") as string;
 
-    if (!imageId || !category || !alt) {
+    if (!imageId || !category || !service || !alt) {
       return json(
-        { error: "Image ID, category, and description are required" },
+        { error: "Image ID, category, service, and description are required" },
         { status: 400 }
       );
     }
 
-    const updated = await updateImage(imageId, { category, alt });
+    const updated = await updateImage(imageId, { category, service, alt });
     if (!updated) {
       return json({ error: "Failed to update image" }, { status: 400 });
     }
@@ -68,6 +69,16 @@ export default function ManageGallery() {
   const { images } = useLoaderData<{ images: GalleryImage[] }>();
   const actionData = useActionData<ActionData>();
   const [editingId, setEditingId] = React.useState<string | null>(null);
+
+  // Define available services
+  const services = [
+    "general-contracting",
+    "framing",
+    "concrete",
+    "door-window-installation",
+    "finish-carpentry-trim",
+    "drywall",
+  ];
 
   return (
     <div className="min-h-screen bg-black py-12 px-4 sm:px-6 lg:px-8">
@@ -112,6 +123,30 @@ export default function ManageGallery() {
 
                   <div className="mb-3">
                     <label className="block text-sm font-medium text-gray-300">
+                      Service
+                    </label>
+                    <select
+                      name="service"
+                      defaultValue={image.service}
+                      className="mt-1 block w-full rounded-md border-gray-600 bg-gray-800 text-white"
+                      required
+                    >
+                      {services.map((service) => (
+                        <option key={service} value={service}>
+                          {service
+                            .split("-")
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                            )
+                            .join(" ")}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-gray-300">
                       Category
                     </label>
                     <select
@@ -120,11 +155,8 @@ export default function ManageGallery() {
                       className="mt-1 block w-full rounded-md border-gray-600 bg-gray-800 text-white"
                       required
                     >
-                      <option value="Framing">Framing</option>
-                      <option value="Decking">Decking</option>
-                      <option value="New Construction">New Construction</option>
-                      <option value="Renovation">Renovation</option>
-                      <option value="Commercial">Commercial</option>
+                      <option value="residential">Residential</option>
+                      <option value="commercial">Commercial</option>
                     </select>
                   </div>
 
@@ -160,7 +192,21 @@ export default function ManageGallery() {
               ) : (
                 <div className="p-4">
                   <p className="text-white text-sm mb-1">{image.alt}</p>
-                  <p className="text-red-500 text-xs mb-3">{image.category}</p>
+                  <div className="flex gap-2 mb-3">
+                    <span className="text-red-500 text-xs">
+                      {image.service
+                        .split("-")
+                        .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ")}
+                    </span>
+                    <span className="text-gray-400 text-xs">•</span>
+                    <span className="text-gray-400 text-xs">
+                      {image.category.charAt(0).toUpperCase() +
+                        image.category.slice(1)}
+                    </span>
+                  </div>
 
                   <div className="flex justify-end space-x-2">
                     <button

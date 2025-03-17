@@ -20,8 +20,8 @@ export default function Index() {
       <div className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1591825729269-caeb344f6df2"
-            alt="Luxury wrap-around deck"
+            src="/images/IMG_4391.jpg"
+            alt="Quality Construction"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -33,7 +33,12 @@ export default function Index() {
                 <h1 className="text-4xl tracking-tight font-extrabold text-white drop-shadow-lg sm:text-5xl md:text-6xl">
                   <span className="block">Quality Construction</span>
                   <span className="block text-red-600 drop-shadow-lg">
-                    Built with Grit
+                    Built with{" "}
+                    <img
+                      src="/images/GRIT_red.png"
+                      alt="Grit"
+                      className="h-16 w-auto inline-block"
+                    />
                   </span>
                 </h1>
                 <p className="mt-3 text-base text-white drop-shadow sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">

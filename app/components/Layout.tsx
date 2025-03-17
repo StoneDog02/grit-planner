@@ -48,11 +48,12 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Logo and desktop navigation container */}
             <div className="flex-1 flex items-center justify-center md:justify-start">
-              <Link
-                to="/"
-                className="text-2xl font-bold text-gray-900 py-3 px-6"
-              >
-                GRIT
+              <Link to="/" className="py-3 px-6">
+                <img
+                  src="/images/Grit_construction_logo-removebg-preview.png"
+                  alt="Grit Construction"
+                  className="h-12 w-auto"
+                />
               </Link>
 
               {/* Desktop navigation */}

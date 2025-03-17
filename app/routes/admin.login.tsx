@@ -13,129 +13,35 @@ interface ActionData {
   error?: string;
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-  console.log("Login page loaded - TESTING");
-
-  try {
-    // Check if already logged in
-    const session = await getUserSession(request);
-    const username = session.get("username");
-
-    console.log("Login loader check:", {
-      hasSession: !!session,
-      username,
-      expectedUsername: process.env.ADMIN_USERNAME,
-      matches: username === process.env.ADMIN_USERNAME,
-      url: request.url,
-    });
-
-    if (username === process.env.ADMIN_USERNAME) {
-      // If already logged in, redirect to upload page
-      console.log("User already logged in, redirecting to upload");
-      return redirect("/admin/upload");
-    }
-
-    // Clear any existing invalid session
-    if (username && username !== process.env.ADMIN_USERNAME) {
-      console.log("Invalid session found, clearing...");
-      return redirect("/admin/login", {
-        headers: {
-          "Set-Cookie": await storage.destroySession(session),
-        },
-      });
-    }
-
-    return json({ message: "Login page loaded" });
-  } catch (error) {
-    console.error("Login loader error:", error);
-    return json({ message: "Login page loaded" });
-  }
-};
-
 export const action: ActionFunction = async ({ request }) => {
-  console.log("\n=== Login Attempt Started - IMMEDIATE LOG ===");
-
   try {
-    if (request.method === "POST") {
-      console.log("POST request received");
-    }
-
     const formData = await request.formData();
-    const username = formData.get("username");
-    const password = formData.get("password");
+    const username = formData.get("username")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
 
-    console.log("Form data received:", {
-      username: username?.toString(),
-      passwordLength: password ? password.toString().length : 0,
-    });
-
-    const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-    const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH;
-
-    console.log("Environment variables:", {
-      ADMIN_USERNAME,
-      ADMIN_PASSWORD_HASH,
-      envUsernameLength: ADMIN_USERNAME?.length,
-      envHashLength: ADMIN_PASSWORD_HASH?.length,
-    });
-
-    if (!ADMIN_USERNAME || !ADMIN_PASSWORD_HASH) {
-      console.error("Missing admin credentials in environment");
-      return json({ error: "Server configuration error" }, { status: 500 });
-    }
-
+    // Basic validation
     if (!username || !password) {
-      console.log("Missing username or password in request");
       return json(
         { error: "Username and password are required" },
         { status: 400 }
       );
     }
 
-    // First check username separately
-    const usernameMatches = username === ADMIN_USERNAME;
-    console.log("Username check:", {
-      provided: username,
-      expected: ADMIN_USERNAME,
-      matches: usernameMatches,
-    });
-
-    if (!usernameMatches) {
-      console.log("Username mismatch");
-      return json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    // Then check password
-    console.log("Attempting password verification...");
-    const passwordMatch = await bcrypt.compare(
-      password.toString(),
-      ADMIN_PASSWORD_HASH
+    // Simple credential check
+    const isValidUsername = username === process.env.ADMIN_USERNAME;
+    const isValidPassword = await bcrypt.compare(
+      password,
+      process.env.ADMIN_PASSWORD_HASH || ""
     );
 
-    console.log("Password check result:", {
-      matches: passwordMatch,
-    });
-
-    if (!passwordMatch) {
+    if (!isValidUsername || !isValidPassword) {
       return json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    console.log("Login successful, creating session...");
-
-    // Clear any existing session
-    const existingSession = await getUserSession(request);
-    if (existingSession) {
-      await storage.destroySession(existingSession);
     }
 
     // Create new session
-    const session = await storage.getSession();
-    session.set("username", username.toString());
-
-    return redirect("/admin/upload", {
-      headers: {
-        "Set-Cookie": await storage.commitSession(session),
-      },
+    return createUserSession({
+      username,
+      redirectTo: "/admin/upload",
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -143,14 +49,22 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export default function AdminLogin() {
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getUserSession(request);
+  if (session?.get("username")) {
+    return redirect("/admin/upload");
+  }
+  return null;
+};
+
+export default function Login() {
   const actionData = useActionData<ActionData>();
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Admin Login
           </h2>
         </div>
@@ -165,7 +79,7 @@ export default function AdminLogin() {
                 name="username"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Username"
               />
             </div>
@@ -178,20 +92,20 @@ export default function AdminLogin() {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
               />
             </div>
           </div>
 
           {actionData?.error && (
-            <div className="text-red-500 text-sm">{actionData.error}</div>
+            <div className="text-red-600 text-sm">{actionData.error}</div>
           )}
 
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Sign in
             </button>
