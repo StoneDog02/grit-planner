@@ -79,7 +79,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   try {
     const { data: resendData, error } = await resend.emails.send({
-      from: "Grit Construction <gritconstruction2023@gmail.com>",
+      from: "Grit Construction <onboarding@resend.dev>",
       to: ["gritconstruction2023@gmail.com"],
       subject: `New Bid Request from ${
         data.name.charAt(0).toUpperCase() + data.name.slice(1)
