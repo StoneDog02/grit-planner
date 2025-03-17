@@ -14,7 +14,7 @@ import Layout from "./components/Layout";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   { rel: "icon", type: "image/svg+xml", href: "/images/logo.svg" },
-  { rel: "alternate icon", href: "/images/favicon.ico" },
+  { rel: "alternate icon", href: "/favicon.ico" },
 ];
 
 export const loader: LoaderFunction = () => {
