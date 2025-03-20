@@ -22,9 +22,9 @@ export default function Layout({ children }: LayoutProps) {
     <>
       <header className="bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto px-4">
-          <div className="flex h-16 justify-between items-center">
+          <div className="flex h-16 items-center justify-between md:justify-start">
             {/* Mobile menu button */}
-            <div className="flex md:hidden">
+            <div className="w-10 flex md:hidden">
               <button
                 type="button"
                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
@@ -48,7 +48,7 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             {/* Logo and navigation links */}
-            <div className="flex-1 flex items-center">
+            <div className="absolute left-1/2 transform -translate-x-1/2 md:relative md:left-0 md:transform-none flex-1 flex items-center">
               <Link to="/" className="py-3 px-6">
                 <img
                   src="/images/Grit_construction_logo-removebg-preview.png"

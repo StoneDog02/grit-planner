@@ -248,254 +248,261 @@ export default function RequestBid() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-              Request a Bid
-            </h2>
-            <p className="mt-4 text-lg text-white">
-              Fill out the form below and we'll get back to you with a detailed
-              quote for your project.
-            </p>
-          </div>
-
-          {fetcher.data?.error && (
-            <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-              {fetcher.data.error}
+        <div className="relative max-w-3xl mx-auto">
+          {/* Frosted glass background */}
+          <div className="absolute inset-0 bg-white/40 backdrop-filter backdrop-blur-md backdrop-saturate-150 rounded-xl"></div>
+          {/* Additional blur layer */}
+          <div className="absolute inset-0 bg-black/10 backdrop-filter backdrop-blur-lg backdrop-saturate-150 rounded-xl"></div>
+          {/* Content container */}
+          <div className="relative bg-white/20 rounded-xl shadow-2xl p-8 border border-white/40">
+            <div className="text-center">
+              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+                Request a Bid
+              </h2>
+              <p className="mt-4 text-lg text-white">
+                Fill out the form below and we'll get back to you with a
+                detailed quote for your project.
+              </p>
             </div>
-          )}
 
-          <div className="mt-12">
-            <fetcher.Form
-              method="post"
-              onSubmit={handleSubmit}
-              className="space-y-8"
-            >
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-white"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
+            {fetcher.data?.error && (
+              <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                {fetcher.data.error}
               </div>
+            )}
 
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-white"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
+            <div className="mt-12">
+              <fetcher.Form
+                method="post"
+                onSubmit={handleSubmit}
+                className="space-y-8"
+              >
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  />
+                </div>
 
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-white"
-                >
-                  Phone
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-white mb-2">
-                  Preferred Contact Method
-                </label>
-                <div className="flex space-x-6">
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="email-preference"
-                      name="contactPreference"
-                      value="email"
-                      checked={formData.contactPreference === "email"}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
-                    />
-                    <label
-                      htmlFor="email-preference"
-                      className="ml-2 text-sm text-white"
-                    >
-                      Email
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      id="phone-preference"
-                      name="contactPreference"
-                      value="phone"
-                      checked={formData.contactPreference === "phone"}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
-                    />
-                    <label
-                      htmlFor="phone-preference"
-                      className="ml-2 text-sm text-white"
-                    >
-                      Phone
-                    </label>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Phone
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white mb-2">
+                    Preferred Contact Method
+                  </label>
+                  <div className="flex space-x-6">
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="email-preference"
+                        name="contactPreference"
+                        value="email"
+                        checked={formData.contactPreference === "email"}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                      />
+                      <label
+                        htmlFor="email-preference"
+                        className="ml-2 text-sm text-white"
+                      >
+                        Email
+                      </label>
+                    </div>
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        id="phone-preference"
+                        name="contactPreference"
+                        value="phone"
+                        checked={formData.contactPreference === "phone"}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                      />
+                      <label
+                        htmlFor="phone-preference"
+                        className="ml-2 text-sm text-white"
+                      >
+                        Phone
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div>
-                <label
-                  htmlFor="scope"
-                  className="block text-sm font-medium text-white"
-                >
-                  Project Type
-                </label>
-                <select
-                  name="scope"
-                  id="scope"
-                  required
-                  value={formData.scope}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                >
-                  <option value="">Select project type</option>
-                  <option value="residential">Residential</option>
-                  <option value="commercial">Commercial</option>
-                </select>
-              </div>
+                <div>
+                  <label
+                    htmlFor="scope"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Project Type
+                  </label>
+                  <select
+                    name="scope"
+                    id="scope"
+                    required
+                    value={formData.scope}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  >
+                    <option value="">Select project type</option>
+                    <option value="residential">Residential</option>
+                    <option value="commercial">Commercial</option>
+                  </select>
+                </div>
 
-              <div>
-                <label
-                  htmlFor="projectType"
-                  className="block text-sm font-medium text-white"
-                >
-                  Project Scope
-                </label>
-                <select
-                  name="projectType"
-                  id="projectType"
-                  required
-                  value={formData.projectType}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                >
-                  <option value="">Select project scope</option>
-                  <option value="general-contracting">
-                    General Contracting
-                  </option>
-                  <option value="framing">Framing</option>
-                  <option value="concrete">Concrete</option>
-                  <option value="door-window-installation">
-                    Door & Window Installation
-                  </option>
-                  <option value="finish-carpentry-trim">
-                    Finish Carpentry & Trim
-                  </option>
-                  <option value="drywall">Drywall</option>
-                </select>
-              </div>
+                <div>
+                  <label
+                    htmlFor="projectType"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Project Scope
+                  </label>
+                  <select
+                    name="projectType"
+                    id="projectType"
+                    required
+                    value={formData.projectType}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  >
+                    <option value="">Select project scope</option>
+                    <option value="general-contracting">
+                      General Contracting
+                    </option>
+                    <option value="framing">Framing</option>
+                    <option value="concrete">Concrete</option>
+                    <option value="door-window-installation">
+                      Door & Window Installation
+                    </option>
+                    <option value="finish-carpentry-trim">
+                      Finish Carpentry & Trim
+                    </option>
+                    <option value="drywall">Drywall</option>
+                  </select>
+                </div>
 
-              <div>
-                <label
-                  htmlFor="projectDescription"
-                  className="block text-sm font-medium text-white"
-                >
-                  Project Description
-                </label>
-                <textarea
-                  name="projectDescription"
-                  id="projectDescription"
-                  rows={4}
-                  required
-                  value={formData.projectDescription}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
+                <div>
+                  <label
+                    htmlFor="projectDescription"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Project Description
+                  </label>
+                  <textarea
+                    name="projectDescription"
+                    id="projectDescription"
+                    rows={4}
+                    required
+                    value={formData.projectDescription}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  />
+                </div>
 
-              <div>
-                <label
-                  htmlFor="timeline"
-                  className="block text-sm font-medium text-white"
-                >
-                  Desired Timeline
-                </label>
-                <input
-                  type="text"
-                  name="timeline"
-                  id="timeline"
-                  placeholder="e.g., ASAP, 3 months, etc."
-                  required
-                  value={formData.timeline}
-                  onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                />
-              </div>
+                <div>
+                  <label
+                    htmlFor="timeline"
+                    className="block text-sm font-medium text-white"
+                  >
+                    Desired Timeline
+                  </label>
+                  <input
+                    type="text"
+                    name="timeline"
+                    id="timeline"
+                    placeholder="e.g., ASAP, 3 months, etc."
+                    required
+                    value={formData.timeline}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                  />
+                </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={fetcher.state !== "idle"}
-                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                    fetcher.state !== "idle"
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                  }`}
-                >
-                  {fetcher.state !== "idle" ? (
-                    <div className="flex items-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Submitting...
-                    </div>
-                  ) : (
-                    "Submit Request"
-                  )}
-                </button>
-              </div>
-            </fetcher.Form>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={fetcher.state !== "idle"}
+                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                      fetcher.state !== "idle"
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    }`}
+                  >
+                    {fetcher.state !== "idle" ? (
+                      <div className="flex items-center">
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Submitting...
+                      </div>
+                    ) : (
+                      "Submit Request"
+                    )}
+                  </button>
+                </div>
+              </fetcher.Form>
+            </div>
           </div>
         </div>
       </div>

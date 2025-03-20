@@ -2,3 +2,12 @@ node_modules
 .env
 build
 .cache
+
+# Netlify Function Build Artifacts
+netlify/functions/server/*.js
+netlify/functions/server/*.js.map
+netlify/functions/server/*.json
+netlify/functions/server/version.txt
+netlify/functions/server/build/
+netlify/functions-internal/
+.netlify/
