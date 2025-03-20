@@ -13,9 +13,10 @@ export default function Layout({ children }: LayoutProps) {
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Request Bid", href: "/request-bid" },
     { name: "Contact", href: "/contact" },
   ];
+
+  const requestBidLink = { name: "Request Bid", href: "/request-bid" };
 
   return (
     <>
@@ -46,8 +47,8 @@ export default function Layout({ children }: LayoutProps) {
               </button>
             </div>
 
-            {/* Logo and desktop navigation container */}
-            <div className="flex-1 flex items-center justify-center md:justify-start">
+            {/* Logo and navigation links */}
+            <div className="flex-1 flex items-center">
               <Link to="/" className="py-3 px-6">
                 <img
                   src="/images/Grit_construction_logo-removebg-preview.png"
@@ -81,9 +82,18 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
 
-            {/* Empty div to maintain centering on mobile */}
-            <div className="flex-1 flex justify-end md:hidden">
-              <div className="w-10"></div>
+            {/* Request Bid Button */}
+            <div className="hidden md:flex items-center">
+              <Link
+                to={requestBidLink.href}
+                className={`inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 transition-colors ${
+                  location.pathname.startsWith(requestBidLink.href)
+                    ? "bg-red-700"
+                    : ""
+                }`}
+              >
+                {requestBidLink.name}
+              </Link>
             </div>
           </div>
 
@@ -94,7 +104,7 @@ export default function Layout({ children }: LayoutProps) {
             } md:hidden border-t border-gray-200`}
           >
             <div className="pt-2 pb-3 space-y-1">
-              {navigation.map((item) => {
+              {[...navigation, requestBidLink].map((item) => {
                 const isActive =
                   (item.href === "/" && location.pathname === "/") ||
                   (item.href !== "/" &&

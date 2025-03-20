@@ -10,14 +10,10 @@ export const storage = createCookieSessionStorage({
     name: "GRIT_admin_session",
     secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
-    sameSite: "strict",
+    sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 30, // 30 days
     httpOnly: true,
-    domain:
-      process.env.NODE_ENV === "production"
-        ? "gritconstruction.netlify.app"
-        : undefined,
   },
 });
 
@@ -56,17 +52,27 @@ export async function getUserSession(request: Request) {
 export async function requireAdminUser(request: Request) {
   const session = await getUserSession(request);
   const username = session.get("username");
+  const expectedUsername = process.env.ADMIN_USERNAME;
 
   console.log("Session check:", {
     hasSession: !!session,
     username,
-    expectedUsername: process.env.ADMIN_USERNAME,
-    matches: username === process.env.ADMIN_USERNAME,
+    expectedUsername,
+    matches: username === expectedUsername,
     url: request.url,
   });
 
-  if (!username || username !== process.env.ADMIN_USERNAME) {
-    // Clear any existing session before redirecting
+  // Only redirect if we don't have a valid session
+  if (!username || username !== expectedUsername) {
+    const url = new URL(request.url);
+
+    // Don't redirect or destroy session if we're already on the login page
+    // or if we're at the /admin root (which handles its own redirects)
+    if (url.pathname === "/admin/login" || url.pathname === "/admin") {
+      return null;
+    }
+
+    // For other protected routes, clear session and redirect
     throw redirect("/admin/login", {
       headers: {
         "Set-Cookie": await storage.destroySession(session),

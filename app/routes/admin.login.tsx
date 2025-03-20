@@ -19,6 +19,17 @@ export const action: ActionFunction = async ({ request }) => {
     const username = formData.get("username")?.toString() ?? "";
     const password = formData.get("password")?.toString() ?? "";
 
+    // Get environment variables
+    const storedHash = process.env.ADMIN_PASSWORD_HASH || "";
+    const storedUsername = process.env.ADMIN_USERNAME || "";
+
+    // Debug environment variables
+    console.log("Environment Debug:");
+    console.log("Raw stored hash:", storedHash);
+    console.log("Raw stored username:", storedUsername);
+    console.log("Hash length:", storedHash.length);
+    console.log("Username length:", storedUsername.length);
+
     // Basic validation
     if (!username || !password) {
       return json(
@@ -27,12 +38,28 @@ export const action: ActionFunction = async ({ request }) => {
       );
     }
 
+    // Clean the hash (remove quotes and trim)
+    const cleanHash = storedHash.replace(/^["']|["']$/g, "").trim();
+    console.log("Cleaned hash:", cleanHash);
+    console.log("Cleaned hash length:", cleanHash.length);
+
     // Simple credential check
-    const isValidUsername = username === process.env.ADMIN_USERNAME;
-    const isValidPassword = await bcrypt.compare(
-      password,
-      process.env.ADMIN_PASSWORD_HASH || ""
-    );
+    const isValidUsername = username === storedUsername;
+
+    console.log("Username comparison:", {
+      provided: username,
+      stored: storedUsername,
+      matches: isValidUsername,
+    });
+
+    let isValidPassword = false;
+    try {
+      isValidPassword = await bcrypt.compare(password, cleanHash);
+      console.log("Password validation result:", isValidPassword);
+    } catch (error) {
+      console.error("bcrypt error:", error);
+      return json({ error: "Error validating credentials" }, { status: 500 });
+    }
 
     if (!isValidUsername || !isValidPassword) {
       return json({ error: "Invalid credentials" }, { status: 401 });
@@ -51,9 +78,22 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getUserSession(request);
-  if (session?.get("username")) {
+  const username = session.get("username");
+
+  console.log("Login page loader:", {
+    hasSession: !!session,
+    username,
+    expectedUsername: process.env.ADMIN_USERNAME,
+  });
+
+  // Only redirect if we have a valid session
+  if (username && username === process.env.ADMIN_USERNAME) {
+    console.log("Valid session found, redirecting to upload");
     return redirect("/admin/upload");
   }
+
+  // Otherwise, allow login page to render
+  console.log("No valid session, showing login page");
   return null;
 };
 
