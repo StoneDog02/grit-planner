@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
     <>
       <header className="bg-white shadow-sm">
         <nav className="max-w-7xl mx-auto px-4">
-          <div className="flex h-16 items-center justify-between md:justify-start">
+          <div className="flex h-16 items-center justify-between">
             {/* Mobile menu button */}
             <div className="w-10 flex md:hidden">
               <button
@@ -47,8 +47,22 @@ export default function Layout({ children }: LayoutProps) {
               </button>
             </div>
 
-            {/* Logo and navigation links */}
-            <div className="absolute left-1/2 transform -translate-x-1/2 md:relative md:left-0 md:transform-none flex-1 flex items-center">
+            {/* Mobile-only centered logo */}
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 md:hidden">
+              <Link to="/" className="py-3 px-6">
+                <img
+                  src="/images/Grit_construction_logo-removebg-preview.png"
+                  alt="Grit Construction"
+                  className="h-12 w-auto"
+                />
+              </Link>
+            </div>
+
+            {/* Spacer div for mobile to maintain layout */}
+            <div className="w-10 md:hidden"></div>
+
+            {/* Desktop logo and navigation */}
+            <div className="hidden md:flex md:flex-1 items-center">
               <Link to="/" className="py-3 px-6">
                 <img
                   src="/images/Grit_construction_logo-removebg-preview.png"
@@ -57,8 +71,7 @@ export default function Layout({ children }: LayoutProps) {
                 />
               </Link>
 
-              {/* Desktop navigation */}
-              <div className="hidden md:flex md:ml-16">
+              <div className="ml-16 flex">
                 {navigation.map((item) => {
                   const isActive =
                     (item.href === "/" && location.pathname === "/") ||
