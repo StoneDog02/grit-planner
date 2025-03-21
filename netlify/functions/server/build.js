@@ -1645,7 +1645,7 @@ function RequestBid() {
         backgroundImage: "url('https://images.pexels.com/photos/7031595/pexels-photo-7031595.jpeg')"
       },
       children: [
-        /* @__PURE__ */ jsxDEV7("div", { className: "absolute inset-0 bg-black bg-opacity-50" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV7("div", { className: "absolute inset-0 bg-black/50" }, void 0, !1, {
           fileName: "app/routes/request-bid.tsx",
           lineNumber: 222,
           columnNumber: 7
@@ -1705,596 +1705,606 @@ function RequestBid() {
           },
           this
         ),
-        /* @__PURE__ */ jsxDEV7("div", { className: "relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV7("div", { className: "relative max-w-3xl mx-auto", children: [
-          /* @__PURE__ */ jsxDEV7("div", { className: "absolute inset-0 bg-white/40 backdrop-filter backdrop-blur-md backdrop-saturate-150 rounded-xl" }, void 0, !1, {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 253,
-            columnNumber: 11
-          }, this),
-          /* @__PURE__ */ jsxDEV7("div", { className: "absolute inset-0 bg-black/10 backdrop-filter backdrop-blur-lg backdrop-saturate-150 rounded-xl" }, void 0, !1, {
-            fileName: "app/routes/request-bid.tsx",
-            lineNumber: 255,
-            columnNumber: 11
-          }, this),
-          /* @__PURE__ */ jsxDEV7("div", { className: "relative bg-white/20 rounded-xl shadow-2xl p-8 border border-white/40", children: [
-            /* @__PURE__ */ jsxDEV7("div", { className: "text-center", children: [
-              /* @__PURE__ */ jsxDEV7("h2", { className: "text-3xl font-extrabold text-white sm:text-4xl", children: "Request a Bid" }, void 0, !1, {
+        /* @__PURE__ */ jsxDEV7("div", { className: "relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxDEV7("div", { className: "relative max-w-3xl mx-auto", children: /* @__PURE__ */ jsxDEV7(
+          "div",
+          {
+            className: "relative px-8 py-16",
+            style: {
+              backgroundColor: "rgba(255, 255, 255, 0.35)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              borderRadius: "24px",
+              margin: "0 -8px"
+            },
+            children: /* @__PURE__ */ jsxDEV7("div", { className: "max-w-3xl mx-auto", children: [
+              /* @__PURE__ */ jsxDEV7("div", { className: "text-center", children: [
+                /* @__PURE__ */ jsxDEV7("h2", { className: "text-3xl font-extrabold text-white sm:text-4xl", children: "Request a Bid" }, void 0, !1, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 267,
+                  columnNumber: 17
+                }, this),
+                /* @__PURE__ */ jsxDEV7("p", { className: "mt-4 text-lg text-white", children: "Fill out the form below and we'll get back to you with a detailed quote for your project." }, void 0, !1, {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 270,
+                  columnNumber: 17
+                }, this)
+              ] }, void 0, !0, {
                 fileName: "app/routes/request-bid.tsx",
-                lineNumber: 259,
+                lineNumber: 266,
                 columnNumber: 15
               }, this),
-              /* @__PURE__ */ jsxDEV7("p", { className: "mt-4 text-lg text-white", children: "Fill out the form below and we'll get back to you with a detailed quote for your project." }, void 0, !1, {
+              fetcher.data?.error && /* @__PURE__ */ jsxDEV7("div", { className: "mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
                 fileName: "app/routes/request-bid.tsx",
-                lineNumber: 262,
-                columnNumber: 15
-              }, this)
-            ] }, void 0, !0, {
-              fileName: "app/routes/request-bid.tsx",
-              lineNumber: 258,
-              columnNumber: 13
-            }, this),
-            fetcher.data?.error && /* @__PURE__ */ jsxDEV7("div", { className: "mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded", children: fetcher.data.error }, void 0, !1, {
-              fileName: "app/routes/request-bid.tsx",
-              lineNumber: 269,
-              columnNumber: 15
-            }, this),
-            /* @__PURE__ */ jsxDEV7("div", { className: "mt-12", children: /* @__PURE__ */ jsxDEV7(
-              fetcher.Form,
-              {
-                method: "post",
-                onSubmit: handleSubmit,
-                className: "space-y-8",
-                children: [
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "name",
-                        className: "block text-sm font-medium text-white",
-                        children: "Name"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 281,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "input",
-                      {
-                        type: "text",
-                        name: "name",
-                        id: "name",
-                        required: !0,
-                        value: formData.name,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 287,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 280,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "email",
-                        className: "block text-sm font-medium text-white",
-                        children: "Email"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 299,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "input",
-                      {
-                        type: "email",
-                        name: "email",
-                        id: "email",
-                        required: !0,
-                        value: formData.email,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 305,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 298,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "phone",
-                        className: "block text-sm font-medium text-white",
-                        children: "Phone"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 317,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "input",
-                      {
-                        type: "tel",
-                        name: "phone",
-                        id: "phone",
-                        required: !0,
-                        value: formData.phone,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 323,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 316,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7("label", { className: "block text-sm font-medium text-white mb-2", children: "Preferred Contact Method" }, void 0, !1, {
+                lineNumber: 277,
+                columnNumber: 17
+              }, this),
+              /* @__PURE__ */ jsxDEV7("div", { className: "mt-12", children: /* @__PURE__ */ jsxDEV7(
+                fetcher.Form,
+                {
+                  method: "post",
+                  onSubmit: handleSubmit,
+                  className: "space-y-8",
+                  children: [
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "name",
+                          className: "block text-sm font-medium text-white",
+                          children: "Name"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 289,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "input",
+                        {
+                          type: "text",
+                          name: "name",
+                          id: "name",
+                          required: !0,
+                          value: formData.name,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 295,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 335,
+                      lineNumber: 288,
                       columnNumber: 19
                     }, this),
-                    /* @__PURE__ */ jsxDEV7("div", { className: "flex space-x-6", children: [
-                      /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
-                        /* @__PURE__ */ jsxDEV7(
-                          "input",
-                          {
-                            type: "radio",
-                            id: "email-preference",
-                            name: "contactPreference",
-                            value: "email",
-                            checked: formData.contactPreference === "email",
-                            onChange: handleChange,
-                            className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
-                          },
-                          void 0,
-                          !1,
-                          {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 340,
-                            columnNumber: 23
-                          },
-                          this
-                        ),
-                        /* @__PURE__ */ jsxDEV7(
-                          "label",
-                          {
-                            htmlFor: "email-preference",
-                            className: "ml-2 text-sm text-white",
-                            children: "Email"
-                          },
-                          void 0,
-                          !1,
-                          {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 349,
-                            columnNumber: 23
-                          },
-                          this
-                        )
-                      ] }, void 0, !0, {
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "email",
+                          className: "block text-sm font-medium text-white",
+                          children: "Email"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 307,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "input",
+                        {
+                          type: "email",
+                          name: "email",
+                          id: "email",
+                          required: !0,
+                          value: formData.email,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 313,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 306,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "phone",
+                          className: "block text-sm font-medium text-white",
+                          children: "Phone"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 325,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "input",
+                        {
+                          type: "tel",
+                          name: "phone",
+                          id: "phone",
+                          required: !0,
+                          value: formData.phone,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 331,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 324,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7("label", { className: "block text-sm font-medium text-white mb-2", children: "Preferred Contact Method" }, void 0, !1, {
                         fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 339,
+                        lineNumber: 343,
                         columnNumber: 21
                       }, this),
-                      /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
-                        /* @__PURE__ */ jsxDEV7(
-                          "input",
-                          {
-                            type: "radio",
-                            id: "phone-preference",
-                            name: "contactPreference",
-                            value: "phone",
-                            checked: formData.contactPreference === "phone",
-                            onChange: handleChange,
-                            className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
-                          },
-                          void 0,
-                          !1,
-                          {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 357,
-                            columnNumber: 23
-                          },
-                          this
-                        ),
-                        /* @__PURE__ */ jsxDEV7(
-                          "label",
-                          {
-                            htmlFor: "phone-preference",
-                            className: "ml-2 text-sm text-white",
-                            children: "Phone"
-                          },
-                          void 0,
-                          !1,
-                          {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 366,
-                            columnNumber: 23
-                          },
-                          this
-                        )
+                      /* @__PURE__ */ jsxDEV7("div", { className: "flex space-x-6", children: [
+                        /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
+                          /* @__PURE__ */ jsxDEV7(
+                            "input",
+                            {
+                              type: "radio",
+                              id: "email-preference",
+                              name: "contactPreference",
+                              value: "email",
+                              checked: formData.contactPreference === "email",
+                              onChange: handleChange,
+                              className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 348,
+                              columnNumber: 25
+                            },
+                            this
+                          ),
+                          /* @__PURE__ */ jsxDEV7(
+                            "label",
+                            {
+                              htmlFor: "email-preference",
+                              className: "ml-2 text-sm text-white",
+                              children: "Email"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 357,
+                              columnNumber: 25
+                            },
+                            this
+                          )
+                        ] }, void 0, !0, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 347,
+                          columnNumber: 23
+                        }, this),
+                        /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
+                          /* @__PURE__ */ jsxDEV7(
+                            "input",
+                            {
+                              type: "radio",
+                              id: "phone-preference",
+                              name: "contactPreference",
+                              value: "phone",
+                              checked: formData.contactPreference === "phone",
+                              onChange: handleChange,
+                              className: "h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 accent-red-600"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 365,
+                              columnNumber: 25
+                            },
+                            this
+                          ),
+                          /* @__PURE__ */ jsxDEV7(
+                            "label",
+                            {
+                              htmlFor: "phone-preference",
+                              className: "ml-2 text-sm text-white",
+                              children: "Phone"
+                            },
+                            void 0,
+                            !1,
+                            {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 374,
+                              columnNumber: 25
+                            },
+                            this
+                          )
+                        ] }, void 0, !0, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 364,
+                          columnNumber: 23
+                        }, this)
                       ] }, void 0, !0, {
                         fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 356,
+                        lineNumber: 346,
                         columnNumber: 21
                       }, this)
                     ] }, void 0, !0, {
                       fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 338,
+                      lineNumber: 342,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "scope",
+                          className: "block text-sm font-medium text-white",
+                          children: "Project Type"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 385,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "select",
+                        {
+                          name: "scope",
+                          id: "scope",
+                          required: !0,
+                          value: formData.scope,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
+                          children: [
+                            /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project type" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 399,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "residential", children: "Residential" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 400,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 401,
+                              columnNumber: 23
+                            }, this)
+                          ]
+                        },
+                        void 0,
+                        !0,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 391,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 384,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "projectType",
+                          className: "block text-sm font-medium text-white",
+                          children: "Project Scope"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 406,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "select",
+                        {
+                          name: "projectType",
+                          id: "projectType",
+                          required: !0,
+                          value: formData.projectType,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
+                          children: [
+                            /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project scope" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 420,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "general-contracting", children: "General Contracting" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 421,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "framing", children: "Framing" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 424,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "concrete", children: "Concrete" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 425,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "door-window-installation", children: "Door & Window Installation" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 426,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "finish-carpentry-trim", children: "Finish Carpentry & Trim" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 429,
+                              columnNumber: 23
+                            }, this),
+                            /* @__PURE__ */ jsxDEV7("option", { value: "drywall", children: "Drywall" }, void 0, !1, {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 432,
+                              columnNumber: 23
+                            }, this)
+                          ]
+                        },
+                        void 0,
+                        !0,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 412,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 405,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "projectDescription",
+                          className: "block text-sm font-medium text-white",
+                          children: "Project Description"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 437,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "textarea",
+                        {
+                          name: "projectDescription",
+                          id: "projectDescription",
+                          rows: 4,
+                          required: !0,
+                          value: formData.projectDescription,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 443,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 436,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: [
+                      /* @__PURE__ */ jsxDEV7(
+                        "label",
+                        {
+                          htmlFor: "timeline",
+                          className: "block text-sm font-medium text-white",
+                          children: "Desired Timeline"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 455,
+                          columnNumber: 21
+                        },
+                        this
+                      ),
+                      /* @__PURE__ */ jsxDEV7(
+                        "input",
+                        {
+                          type: "text",
+                          name: "timeline",
+                          id: "timeline",
+                          placeholder: "e.g., ASAP, 3 months, etc.",
+                          required: !0,
+                          value: formData.timeline,
+                          onChange: handleChange,
+                          className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                        },
+                        void 0,
+                        !1,
+                        {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 461,
+                          columnNumber: 21
+                        },
+                        this
+                      )
+                    ] }, void 0, !0, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 454,
+                      columnNumber: 19
+                    }, this),
+                    /* @__PURE__ */ jsxDEV7("div", { children: /* @__PURE__ */ jsxDEV7(
+                      "button",
+                      {
+                        type: "submit",
+                        disabled: fetcher.state !== "idle",
+                        className: `w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${fetcher.state !== "idle" ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"}`,
+                        children: fetcher.state !== "idle" ? /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
+                          /* @__PURE__ */ jsxDEV7(
+                            "svg",
+                            {
+                              className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white",
+                              xmlns: "http://www.w3.org/2000/svg",
+                              fill: "none",
+                              viewBox: "0 0 24 24",
+                              children: [
+                                /* @__PURE__ */ jsxDEV7(
+                                  "circle",
+                                  {
+                                    className: "opacity-25",
+                                    cx: "12",
+                                    cy: "12",
+                                    r: "10",
+                                    stroke: "currentColor",
+                                    strokeWidth: "4"
+                                  },
+                                  void 0,
+                                  !1,
+                                  {
+                                    fileName: "app/routes/request-bid.tsx",
+                                    lineNumber: 491,
+                                    columnNumber: 29
+                                  },
+                                  this
+                                ),
+                                /* @__PURE__ */ jsxDEV7(
+                                  "path",
+                                  {
+                                    className: "opacity-75",
+                                    fill: "currentColor",
+                                    d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                  },
+                                  void 0,
+                                  !1,
+                                  {
+                                    fileName: "app/routes/request-bid.tsx",
+                                    lineNumber: 499,
+                                    columnNumber: 29
+                                  },
+                                  this
+                                )
+                              ]
+                            },
+                            void 0,
+                            !0,
+                            {
+                              fileName: "app/routes/request-bid.tsx",
+                              lineNumber: 485,
+                              columnNumber: 27
+                            },
+                            this
+                          ),
+                          "Submitting..."
+                        ] }, void 0, !0, {
+                          fileName: "app/routes/request-bid.tsx",
+                          lineNumber: 484,
+                          columnNumber: 25
+                        }, this) : "Submit Request"
+                      },
+                      void 0,
+                      !1,
+                      {
+                        fileName: "app/routes/request-bid.tsx",
+                        lineNumber: 474,
+                        columnNumber: 21
+                      },
+                      this
+                    ) }, void 0, !1, {
+                      fileName: "app/routes/request-bid.tsx",
+                      lineNumber: 473,
                       columnNumber: 19
                     }, this)
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 334,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "scope",
-                        className: "block text-sm font-medium text-white",
-                        children: "Project Type"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 377,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "select",
-                      {
-                        name: "scope",
-                        id: "scope",
-                        required: !0,
-                        value: formData.scope,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
-                        children: [
-                          /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project type" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 391,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "residential", children: "Residential" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 392,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "commercial", children: "Commercial" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 393,
-                            columnNumber: 21
-                          }, this)
-                        ]
-                      },
-                      void 0,
-                      !0,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 383,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 376,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "projectType",
-                        className: "block text-sm font-medium text-white",
-                        children: "Project Scope"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 398,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "select",
-                      {
-                        name: "projectType",
-                        id: "projectType",
-                        required: !0,
-                        value: formData.projectType,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm",
-                        children: [
-                          /* @__PURE__ */ jsxDEV7("option", { value: "", children: "Select project scope" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 412,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "general-contracting", children: "General Contracting" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 413,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "framing", children: "Framing" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 416,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "concrete", children: "Concrete" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 417,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "door-window-installation", children: "Door & Window Installation" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 418,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "finish-carpentry-trim", children: "Finish Carpentry & Trim" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 421,
-                            columnNumber: 21
-                          }, this),
-                          /* @__PURE__ */ jsxDEV7("option", { value: "drywall", children: "Drywall" }, void 0, !1, {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 424,
-                            columnNumber: 21
-                          }, this)
-                        ]
-                      },
-                      void 0,
-                      !0,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 404,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 397,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "projectDescription",
-                        className: "block text-sm font-medium text-white",
-                        children: "Project Description"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 429,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "textarea",
-                      {
-                        name: "projectDescription",
-                        id: "projectDescription",
-                        rows: 4,
-                        required: !0,
-                        value: formData.projectDescription,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 435,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 428,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: [
-                    /* @__PURE__ */ jsxDEV7(
-                      "label",
-                      {
-                        htmlFor: "timeline",
-                        className: "block text-sm font-medium text-white",
-                        children: "Desired Timeline"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 447,
-                        columnNumber: 19
-                      },
-                      this
-                    ),
-                    /* @__PURE__ */ jsxDEV7(
-                      "input",
-                      {
-                        type: "text",
-                        name: "timeline",
-                        id: "timeline",
-                        placeholder: "e.g., ASAP, 3 months, etc.",
-                        required: !0,
-                        value: formData.timeline,
-                        onChange: handleChange,
-                        className: "mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
-                      },
-                      void 0,
-                      !1,
-                      {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 453,
-                        columnNumber: 19
-                      },
-                      this
-                    )
-                  ] }, void 0, !0, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 446,
-                    columnNumber: 17
-                  }, this),
-                  /* @__PURE__ */ jsxDEV7("div", { children: /* @__PURE__ */ jsxDEV7(
-                    "button",
-                    {
-                      type: "submit",
-                      disabled: fetcher.state !== "idle",
-                      className: `w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${fetcher.state !== "idle" ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"}`,
-                      children: fetcher.state !== "idle" ? /* @__PURE__ */ jsxDEV7("div", { className: "flex items-center", children: [
-                        /* @__PURE__ */ jsxDEV7(
-                          "svg",
-                          {
-                            className: "animate-spin -ml-1 mr-3 h-5 w-5 text-white",
-                            xmlns: "http://www.w3.org/2000/svg",
-                            fill: "none",
-                            viewBox: "0 0 24 24",
-                            children: [
-                              /* @__PURE__ */ jsxDEV7(
-                                "circle",
-                                {
-                                  className: "opacity-25",
-                                  cx: "12",
-                                  cy: "12",
-                                  r: "10",
-                                  stroke: "currentColor",
-                                  strokeWidth: "4"
-                                },
-                                void 0,
-                                !1,
-                                {
-                                  fileName: "app/routes/request-bid.tsx",
-                                  lineNumber: 483,
-                                  columnNumber: 27
-                                },
-                                this
-                              ),
-                              /* @__PURE__ */ jsxDEV7(
-                                "path",
-                                {
-                                  className: "opacity-75",
-                                  fill: "currentColor",
-                                  d: "M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                },
-                                void 0,
-                                !1,
-                                {
-                                  fileName: "app/routes/request-bid.tsx",
-                                  lineNumber: 491,
-                                  columnNumber: 27
-                                },
-                                this
-                              )
-                            ]
-                          },
-                          void 0,
-                          !0,
-                          {
-                            fileName: "app/routes/request-bid.tsx",
-                            lineNumber: 477,
-                            columnNumber: 25
-                          },
-                          this
-                        ),
-                        "Submitting..."
-                      ] }, void 0, !0, {
-                        fileName: "app/routes/request-bid.tsx",
-                        lineNumber: 476,
-                        columnNumber: 23
-                      }, this) : "Submit Request"
-                    },
-                    void 0,
-                    !1,
-                    {
-                      fileName: "app/routes/request-bid.tsx",
-                      lineNumber: 466,
-                      columnNumber: 19
-                    },
-                    this
-                  ) }, void 0, !1, {
-                    fileName: "app/routes/request-bid.tsx",
-                    lineNumber: 465,
-                    columnNumber: 17
-                  }, this)
-                ]
-              },
-              void 0,
-              !0,
-              {
+                  ]
+                },
+                void 0,
+                !0,
+                {
+                  fileName: "app/routes/request-bid.tsx",
+                  lineNumber: 283,
+                  columnNumber: 17
+                },
+                this
+              ) }, void 0, !1, {
                 fileName: "app/routes/request-bid.tsx",
-                lineNumber: 275,
+                lineNumber: 282,
                 columnNumber: 15
-              },
-              this
-            ) }, void 0, !1, {
+              }, this)
+            ] }, void 0, !0, {
               fileName: "app/routes/request-bid.tsx",
-              lineNumber: 274,
+              lineNumber: 265,
               columnNumber: 13
             }, this)
-          ] }, void 0, !0, {
+          },
+          void 0,
+          !1,
+          {
             fileName: "app/routes/request-bid.tsx",
-            lineNumber: 257,
+            lineNumber: 253,
             columnNumber: 11
-          }, this)
-        ] }, void 0, !0, {
+          },
+          this
+        ) }, void 0, !1, {
           fileName: "app/routes/request-bid.tsx",
           lineNumber: 251,
           columnNumber: 9
@@ -3835,7 +3845,7 @@ function Admin() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-ISKK7BLI.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-PEEBZOBP.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-IMRTJGAV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-U4PPPIWQ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-BX5TRNXD.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "routes/admin", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-EPILGESY.js", imports: ["/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "routes/admin", path: "manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-QSZJKO2J.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "routes/admin", path: "test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-WJQ4PSE5.js", imports: void 0, hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "routes/admin", path: "upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-5S7UN5W2.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-ONWOLKTI.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-BVR65BUI.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-6GYIHSSO.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-7FKQY6U4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "49a635ce", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1742506658931 }, url: "/build/manifest-49A635CE.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-ISKK7BLI.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-PEEBZOBP.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-EARYBTWV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-U4PPPIWQ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-BX5TRNXD.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "routes/admin", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-EPILGESY.js", imports: ["/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "routes/admin", path: "manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-QSZJKO2J.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "routes/admin", path: "test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-WJQ4PSE5.js", imports: void 0, hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "routes/admin", path: "upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-5S7UN5W2.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-ONWOLKTI.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-BVR65BUI.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-A53AUEJH.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-7FKQY6U4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "42931fef", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1742524176205 }, url: "/build/manifest-42931FEF.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {
