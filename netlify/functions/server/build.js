@@ -163,24 +163,41 @@ function Layout({ children }) {
               /* @__PURE__ */ jsxDEV2(
                 "svg",
                 {
-                  className: "h-6 w-6",
+                  className: "h-6 w-6 transition-transform duration-300 ease-in-out",
                   fill: "none",
                   viewBox: "0 0 24 24",
                   strokeWidth: "1.5",
                   stroke: "currentColor",
-                  children: /* @__PURE__ */ jsxDEV2(
+                  children: isMobileMenuOpen ? /* @__PURE__ */ jsxDEV2(
                     "path",
                     {
                       strokeLinecap: "round",
                       strokeLinejoin: "round",
-                      d: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                      d: "M6 18L18 6M6 6l12 12",
+                      className: "transition-opacity duration-300"
                     },
                     void 0,
                     !1,
                     {
                       fileName: "app/components/Layout.tsx",
-                      lineNumber: 41,
-                      columnNumber: 19
+                      lineNumber: 42,
+                      columnNumber: 21
+                    },
+                    this
+                  ) : /* @__PURE__ */ jsxDEV2(
+                    "path",
+                    {
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      d: "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5",
+                      className: "transition-opacity duration-300"
+                    },
+                    void 0,
+                    !1,
+                    {
+                      fileName: "app/components/Layout.tsx",
+                      lineNumber: 49,
+                      columnNumber: 21
                     },
                     this
                   )
@@ -220,22 +237,22 @@ function Layout({ children }) {
           !1,
           {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 53,
+            lineNumber: 63,
             columnNumber: 17
           },
           this
         ) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 52,
+          lineNumber: 62,
           columnNumber: 15
         }, this) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 51,
+          lineNumber: 61,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV2("div", { className: "w-10 md:hidden" }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 62,
+          lineNumber: 72,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV2("div", { className: "hidden md:flex md:flex-1 items-center", children: [
@@ -250,13 +267,13 @@ function Layout({ children }) {
             !1,
             {
               fileName: "app/components/Layout.tsx",
-              lineNumber: 67,
+              lineNumber: 77,
               columnNumber: 17
             },
             this
           ) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 66,
+            lineNumber: 76,
             columnNumber: 15
           }, this),
           /* @__PURE__ */ jsxDEV2("div", { className: "ml-16 flex", children: navigation.map((item) => {
@@ -272,19 +289,19 @@ function Layout({ children }) {
               !1,
               {
                 fileName: "app/components/Layout.tsx",
-                lineNumber: 82,
+                lineNumber: 92,
                 columnNumber: 21
               },
               this
             );
           }) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 74,
+            lineNumber: 84,
             columnNumber: 15
           }, this)
         ] }, void 0, !0, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 65,
+          lineNumber: 75,
           columnNumber: 13
         }, this),
         /* @__PURE__ */ jsxDEV2("div", { className: "hidden md:flex items-center", children: /* @__PURE__ */ jsxDEV2(
@@ -298,13 +315,13 @@ function Layout({ children }) {
           !1,
           {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 100,
+            lineNumber: 110,
             columnNumber: 15
           },
           this
         ) }, void 0, !1, {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 99,
+          lineNumber: 109,
           columnNumber: 13
         }, this)
       ] }, void 0, !0, {
@@ -330,14 +347,14 @@ function Layout({ children }) {
               !1,
               {
                 fileName: "app/components/Layout.tsx",
-                lineNumber: 127,
+                lineNumber: 137,
                 columnNumber: 19
               },
               this
             );
           }) }, void 0, !1, {
             fileName: "app/components/Layout.tsx",
-            lineNumber: 119,
+            lineNumber: 129,
             columnNumber: 13
           }, this)
         },
@@ -345,7 +362,7 @@ function Layout({ children }) {
         !1,
         {
           fileName: "app/components/Layout.tsx",
-          lineNumber: 114,
+          lineNumber: 124,
           columnNumber: 11
         },
         this
@@ -361,7 +378,7 @@ function Layout({ children }) {
     }, this),
     /* @__PURE__ */ jsxDEV2("main", { children }, void 0, !1, {
       fileName: "app/components/Layout.tsx",
-      lineNumber: 146,
+      lineNumber: 156,
       columnNumber: 7
     }, this)
   ] }, void 0, !0, {
@@ -3845,7 +3862,7 @@ function Admin() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { entry: { module: "/build/entry.client-ISKK7BLI.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-PEEBZOBP.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-EARYBTWV.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-U4PPPIWQ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-BX5TRNXD.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "routes/admin", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-EPILGESY.js", imports: ["/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "routes/admin", path: "manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-QSZJKO2J.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "routes/admin", path: "test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-WJQ4PSE5.js", imports: void 0, hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "routes/admin", path: "upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-5S7UN5W2.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-ONWOLKTI.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-BVR65BUI.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-A53AUEJH.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-7FKQY6U4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "42931fef", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1742524176205 }, url: "/build/manifest-42931FEF.js" };
+var assets_manifest_default = { entry: { module: "/build/entry.client-ISKK7BLI.js", imports: ["/build/_shared/chunk-X3PXDGUE.js", "/build/_shared/chunk-PEEBZOBP.js", "/build/_shared/chunk-PLT55Z5M.js", "/build/_shared/chunk-MT4G4X2W.js", "/build/_shared/chunk-F4KNNEUR.js", "/build/_shared/chunk-2Z2JGDFU.js", "/build/_shared/chunk-JR22VO6P.js", "/build/_shared/chunk-PZDJHGND.js"] }, routes: { root: { id: "root", parentId: void 0, path: "", index: void 0, caseSensitive: void 0, module: "/build/root-JB3QWGV3.js", imports: void 0, hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/_index": { id: "routes/_index", parentId: "root", path: void 0, index: !0, caseSensitive: void 0, module: "/build/routes/_index-U4PPPIWQ.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin": { id: "routes/admin", parentId: "root", path: "admin", index: void 0, caseSensitive: void 0, module: "/build/routes/admin-BX5TRNXD.js", imports: ["/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.login": { id: "routes/admin.login", parentId: "routes/admin", path: "login", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.login-EPILGESY.js", imports: ["/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.manage": { id: "routes/admin.manage", parentId: "routes/admin", path: "manage", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.manage-QSZJKO2J.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.test": { id: "routes/admin.test", parentId: "routes/admin", path: "test", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.test-WJQ4PSE5.js", imports: void 0, hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/admin.upload": { id: "routes/admin.upload", parentId: "routes/admin", path: "upload", index: void 0, caseSensitive: void 0, module: "/build/routes/admin.upload-5S7UN5W2.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-HWDIXWJA.js"], hasAction: !0, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/contact": { id: "routes/contact", parentId: "root", path: "contact", index: void 0, caseSensitive: void 0, module: "/build/routes/contact-ONWOLKTI.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/gallery": { id: "routes/gallery", parentId: "root", path: "gallery", index: void 0, caseSensitive: void 0, module: "/build/routes/gallery-BVR65BUI.js", imports: ["/build/_shared/chunk-GW4BFBY4.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !1, hasLoader: !0, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/request-bid": { id: "routes/request-bid", parentId: "root", path: "request-bid", index: void 0, caseSensitive: void 0, module: "/build/routes/request-bid-YXTAN6LV.js", imports: ["/build/_shared/chunk-6AL2JX5S.js", "/build/_shared/chunk-NBEH4DGX.js"], hasAction: !0, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 }, "routes/services": { id: "routes/services", parentId: "root", path: "services", index: void 0, caseSensitive: void 0, module: "/build/routes/services-7FKQY6U4.js", imports: void 0, hasAction: !1, hasLoader: !1, hasClientAction: !1, hasClientLoader: !1, hasErrorBoundary: !1 } }, version: "cef115a0", hmr: { runtime: "/build/_shared/chunk-MT4G4X2W.js", timestamp: 1742528556549 }, url: "/build/manifest-CEF115A0.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var mode = "development", assetsBuildDirectory = "public/build", future = { v3_fetcherPersist: !1, v3_relativeSplatPath: !1, v3_throwAbortReason: !1, v3_routeConfig: !1, v3_singleFetch: !1, v3_lazyRouteDiscovery: !1, unstable_optimizeDeps: !1 }, publicPath = "/build/", entry = { module: entry_server_node_exports }, routes = {

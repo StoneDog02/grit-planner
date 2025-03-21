@@ -32,17 +32,27 @@ export default function Layout({ children }: LayoutProps) {
               >
                 <span className="sr-only">Open main menu</span>
                 <svg
-                  className="h-6 w-6"
+                  className="h-6 w-6 transition-transform duration-300 ease-in-out"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
+                  {isMobileMenuOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                      className="transition-opacity duration-300"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                      className="transition-opacity duration-300"
+                    />
+                  )}
                 </svg>
               </button>
             </div>
