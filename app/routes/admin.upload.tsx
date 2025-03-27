@@ -117,6 +117,7 @@ export default function AdminUpload() {
     "door-window-installation",
     "finish-carpentry-trim",
     "drywall",
+    "decking",
   ];
 
   return (
