@@ -430,6 +430,7 @@ export default function RequestBid() {
                         Finish Carpentry & Trim
                       </option>
                       <option value="drywall">Drywall</option>
+                      <option value="decking">Decking</option>
                     </select>
                   </div>
 
